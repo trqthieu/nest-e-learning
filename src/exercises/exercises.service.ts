@@ -32,6 +32,7 @@ export class ExercisesService {
     const queryBuilder = this.exerciseRepo.createQueryBuilder('exercise');
     queryBuilder
       .leftJoinAndSelect('exercise.courseUnit', 'course_unit')
+      .leftJoinAndSelect('exercise.questions', 'question')
       .orderBy('exercise.createdAt', pageOptionsDto.order)
       .skip(pageOptionsDto.skip)
       .take(pageOptionsDto.take);
