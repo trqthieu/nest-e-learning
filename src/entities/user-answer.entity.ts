@@ -6,11 +6,9 @@ import {
   JoinTable,
   ManyToMany,
   ManyToOne,
-  OneToMany,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
-import { AnswerAnalyze } from './answer-analyze.entity';
 import { QuestionSelect } from './question-select.entity';
 import { Question } from './question.entity';
 import { UserExam } from './user-exam.entity';
@@ -50,9 +48,6 @@ export class UserAnswer {
 
   @ManyToOne(() => UserExam, (userExam) => userExam.userAnswers)
   userExam: UserExam;
-
-  @OneToMany(() => AnswerAnalyze, (answerAnalyze) => answerAnalyze.userAnswer)
-  answerAnalyzes: AnswerAnalyze[];
 
   @CreateDateColumn()
   createdAt: Date;

@@ -25,11 +25,11 @@ export class ExamUnit {
   @Column('text')
   content: string;
 
-  @ManyToOne(() => Exam, (exam) => exam.examUnits)
-  exam: Exam;
+  // @ManyToOne(() => Exam, (exam) => exam.examUnits)
+  // exam: Exam;
 
-  @OneToMany(() => Question, (question) => question.examUnit)
-  questions: Question[];
+  // @OneToMany(() => Question, (question) => question.examUnit)
+  // questions: Question[];
 
   @CreateDateColumn()
   createdAt: Date;

@@ -10,7 +10,8 @@ import {
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
-import { ExamUnit } from './exam-unit.entity';
+import { AnswerAnalyze } from './answer-analyze.entity';
+import { Exam } from './exam.entity';
 import { Exercise } from './exercise.entity';
 import { QuestionSelect } from './question-select.entity';
 import { UserAnswer } from './user-answer.entity';
@@ -62,14 +63,20 @@ export class Question {
   @ManyToOne(() => Exercise, (exercise) => exercise.questions)
   exercise: Exercise;
 
-  @ManyToOne(() => ExamUnit, (examUnit) => examUnit.questions)
-  examUnit: ExamUnit;
+  // @ManyToOne(() => ExamUnit, (examUnit) => examUnit.questions)
+  // examUnit: ExamUnit;
+
+  @ManyToOne(() => Exam, (exam) => exam.questions)
+  exam: Exam;
 
   @OneToMany(() => QuestionSelect, (questionSelect) => questionSelect.question)
   questionSelects: QuestionSelect[];
 
   @OneToMany(() => UserAnswer, (userAnswer) => userAnswer.question)
   userAnswers: UserAnswer[];
+
+  @OneToMany(() => AnswerAnalyze, (answerAnalyze) => answerAnalyze.question)
+  answerAnalyzes: AnswerAnalyze[];
 
   @CreateDateColumn()
   createdAt: Date;

@@ -10,7 +10,7 @@ import {
   UpdateDateColumn,
 } from 'typeorm';
 import { ExamReview } from './exam-review.entity';
-import { ExamUnit } from './exam-unit.entity';
+import { Question } from './question.entity';
 import { UserExam } from './user-exam.entity';
 import { User } from './user.entity';
 
@@ -37,8 +37,11 @@ export class Exam {
   @ManyToOne(() => User, (user) => user.exams)
   author: User;
 
-  @OneToMany(() => ExamUnit, (examUnit) => examUnit.exam)
-  examUnits: ExamUnit[];
+  // @OneToMany(() => ExamUnit, (examUnit) => examUnit.exam)
+  // examUnits: ExamUnit[];
+
+  @OneToMany(() => Question, (question) => question.exam)
+  questions: Question[];
 
   @OneToMany(() => ExamReview, (examReview) => examReview.exam)
   examReviews: ExamReview[];
