@@ -1,8 +1,10 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, OnApplicationBootstrap } from '@nestjs/common';
+import { SeedsService } from './seeds/seed.service';
 
 @Injectable()
-export class AppService {
-  getHello(): string {
-    return 'Hello World!';
+export class AppService implements OnApplicationBootstrap {
+  constructor(private seedsService: SeedsService) {}
+  async onApplicationBootstrap(): Promise<void> {
+    await this.seedsService.seedUserData();
   }
 }
