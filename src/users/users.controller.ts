@@ -33,7 +33,6 @@ import { readFileSync } from 'fs';
 export class UsersController {
   constructor(private usersService: UsersService) {}
 
-  @Public()
   @Post()
   async createUser(@Body() user: CreateUserDto) {
     try {
@@ -43,7 +42,6 @@ export class UsersController {
     }
   }
 
-  @Public()
   @Get()
   async getUsers(@Query() pageOptionsDto: PageOptionsDto) {
     try {
@@ -53,7 +51,6 @@ export class UsersController {
     }
   }
 
-  @Public()
   @Get(':id')
   async getUserDetail(@Param('id') id: string) {
     try {
@@ -63,7 +60,6 @@ export class UsersController {
     }
   }
 
-  @Public()
   @Patch(':id')
   async updateUser(@Param('id') id: string, @Body() user: UpdateUserDto) {
     try {
@@ -73,7 +69,6 @@ export class UsersController {
     }
   }
 
-  @Public()
   @Delete(':id')
   async deleteUser(@Param('id') id: string) {
     try {
@@ -83,7 +78,6 @@ export class UsersController {
     }
   }
 
-  @Public()
   @Post('template')
   async exportTemplateItem(@Res() res: Response) {
     const templateFileName = 'users-import-template.xlsx';
@@ -111,7 +105,6 @@ export class UsersController {
     }
   }
 
-  @Public()
   @Post('import')
   @ApiConsumes('multipart/form-data')
   @UseInterceptors(FileInterceptor('file'))
@@ -132,7 +125,6 @@ export class UsersController {
     }
   }
 
-  @Public()
   @Post('export')
   async exportUsers(
     @Res() res: Response,

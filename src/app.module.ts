@@ -18,6 +18,8 @@ import { CoursesModule } from './courses/courses.module';
 import { CourseGroupModule } from './course-group/course-group.module';
 import { CourseUnitsModule } from './course-units/course-units.module';
 import { CourseSectionsModule } from './course-sections/course-sections.module';
+import { LessonsModule } from './lessons/lessons.module';
+import { ExercisesModule } from './exercises/exercises.module';
 
 @Module({
   imports: [
@@ -46,18 +48,20 @@ import { CourseSectionsModule } from './course-sections/course-sections.module';
     CourseGroupModule,
     CourseUnitsModule,
     CourseSectionsModule,
+    LessonsModule,
+    ExercisesModule,
   ],
   controllers: [AppController],
   providers: [
     AppService,
-    {
-      provide: APP_GUARD,
-      useClass: AuthGuard,
-    },
-    {
-      provide: APP_GUARD,
-      useClass: RolesGuard,
-    },
+    // {
+    //   provide: APP_GUARD,
+    //   useClass: AuthGuard,
+    // },
+    // {
+    //   provide: APP_GUARD,
+    //   useClass: RolesGuard,
+    // },
   ],
 })
 export class AppModule {}

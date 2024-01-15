@@ -20,7 +20,6 @@ import { PageOptionsDto } from 'src/paginations/pagination-option.dto';
 export class CourseSectionsController {
   constructor(private readonly courseSectionsService: CourseSectionsService) {}
 
-  @Public()
   @Post()
   async create(@Body() createCourseSectionDto: CreateCourseSectionDto) {
     try {
@@ -30,7 +29,6 @@ export class CourseSectionsController {
     }
   }
 
-  @Public()
   @Get()
   async findAll(@Query() pageOptionsDto: PageOptionsDto) {
     try {
@@ -40,7 +38,6 @@ export class CourseSectionsController {
     }
   }
 
-  @Public()
   @Get(':id')
   async findOne(@Param('id') id: string) {
     try {
@@ -50,7 +47,6 @@ export class CourseSectionsController {
     }
   }
 
-  @Public()
   @Patch(':id')
   async update(
     @Param('id') id: string,
@@ -66,7 +62,6 @@ export class CourseSectionsController {
     }
   }
 
-  @Public()
   @Delete(':id')
   async remove(@Param('id') id: string) {
     try {
