@@ -22,6 +22,7 @@ import { UserExam } from './user-exam.entity';
 import { AnswerAnalyze } from './answer-analyze.entity';
 import { Notification } from './notification.entity';
 import { FlashcardGroup } from './flashcard-group.entity';
+import { Expose } from 'class-transformer';
 
 @Entity()
 export class User {
@@ -31,7 +32,7 @@ export class User {
   @Column('varchar', { unique: true })
   email: string;
 
-  @Column('varchar')
+  @Column('varchar', { select: false })
   password: string;
 
   @Column('varchar')
