@@ -7,7 +7,7 @@ import {
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
-import { UserAnswer } from './user-answer.entity';
+import { Question } from './question.entity';
 import { User } from './user.entity';
 
 @Entity()
@@ -27,11 +27,11 @@ export class AnswerAnalyze {
   @Column('varchar')
   audio: string;
 
-  @ManyToOne(() => UserAnswer, (userAnswer) => userAnswer.answerAnalyzes)
-  userAnswer: UserAnswer;
-
   @ManyToOne(() => User, (User) => User.answerAnalyzes)
   author: User;
+
+  @ManyToOne(() => Question, (question) => question.answerAnalyzes)
+  question: Question;
 
   @CreateDateColumn()
   createdAt: Date;
