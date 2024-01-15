@@ -57,6 +57,9 @@ export class CoursesService {
       relations: {
         teacher: true,
         courseGroup: true,
+        courseSections: {
+          courseUnits: true,
+        },
       },
     });
   }
