@@ -20,7 +20,6 @@ import { ApiTags } from '@nestjs/swagger';
 export class CourseUnitsController {
   constructor(private readonly courseUnitsService: CourseUnitsService) {}
 
-  @Public()
   @Post()
   async create(@Body() createCourseUnitDto: CreateCourseUnitDto) {
     try {
@@ -30,7 +29,6 @@ export class CourseUnitsController {
     }
   }
 
-  @Public()
   @Get()
   async findAll(@Query() pageOptionsDto: PageOptionsDto) {
     try {
@@ -40,7 +38,6 @@ export class CourseUnitsController {
     }
   }
 
-  @Public()
   @Get(':id')
   async findOne(@Param('id') id: string) {
     try {
@@ -50,7 +47,6 @@ export class CourseUnitsController {
     }
   }
 
-  @Public()
   @Patch(':id')
   async update(
     @Param('id') id: string,
@@ -63,7 +59,6 @@ export class CourseUnitsController {
     }
   }
 
-  @Public()
   @Delete(':id')
   async remove(@Param('id') id: string) {
     try {
