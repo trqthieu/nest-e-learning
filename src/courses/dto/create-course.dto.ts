@@ -61,6 +61,10 @@ export class CreateCourseDto {
   @IsInt()
   teacherId: number;
 
+  @ApiProperty()
+  @IsInt()
+  courseGroupId: number;
+
   @ApiProperty({
     enum: ESubjectCategory,
   })
