@@ -8,12 +8,15 @@ import { User } from 'src/entities/user.entity';
 import { PageOptionsDto } from 'src/paginations/pagination-option.dto';
 import { PageMetaDto } from 'src/paginations/page-meta.dto';
 import { PageDto } from 'src/paginations/page.dto';
+import { CourseGroup } from 'src/entities/course-group.entity';
 
 @Injectable()
 export class CoursesService {
   constructor(
     @InjectRepository(Course)
     private courseRepo: Repository<Course>,
+    @InjectRepository(CourseGroup)
+    private courseGroupRepo: Repository<CourseGroup>,
     @InjectRepository(User)
     private userRepo: Repository<User>,
   ) {}
@@ -21,9 +24,13 @@ export class CoursesService {
     const teacher = await this.userRepo.findOneBy({
       id: createCourseDto.teacherId,
     });
+    const courseGroup = await this.courseGroupRepo.findOneBy({
+      id: createCourseDto.courseGroupId,
+    });
     const course = await this.courseRepo.create({
       ...createCourseDto,
       teacher: teacher,
+      courseGroup: courseGroup,
     });
     return await this.courseRepo.save(course);
   }
@@ -32,6 +39,7 @@ export class CoursesService {
     const queryBuilder = this.courseRepo.createQueryBuilder('course');
     queryBuilder
       .leftJoinAndSelect('course.teacher', 'user')
+      .leftJoinAndSelect('course.courseGroup', 'course_group')
       .orderBy('course.createdAt', pageOptionsDto.order)
       .skip(pageOptionsDto.skip)
       .take(pageOptionsDto.take);
@@ -48,6 +56,7 @@ export class CoursesService {
       },
       relations: {
         teacher: true,
+        courseGroup: true,
       },
     });
   }
@@ -56,10 +65,14 @@ export class CoursesService {
     const teacher = await this.userRepo.findOneBy({
       id: updateCourseDto.teacherId,
     });
+    const courseGroup = await this.courseGroupRepo.findOneBy({
+      id: updateCourseDto.courseGroupId,
+    });
     const course = await this.courseRepo.create({
       id: id,
       ...updateCourseDto,
       teacher: teacher,
+      courseGroup: courseGroup,
     });
     return await this.courseRepo.save(course);
   }

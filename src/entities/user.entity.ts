@@ -1,3 +1,4 @@
+import { ERole } from 'src/auth/dtos/role.enum';
 import {
   Column,
   CreateDateColumn,
@@ -7,22 +8,21 @@ import {
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
-import { Course } from './course.entity';
-import { ERole } from 'src/auth/dtos/role.enum';
-import { Exam } from './exam.entity';
-import { CourseReview } from './course-review.entity';
-import { ExamReview } from './exam-review.entity';
+import { AnswerAnalyze } from './answer-analyze.entity';
 import { Article } from './article.entity';
 import { Comment } from './comment.entity';
+import { CourseGroup } from './course-group.entity';
+import { CourseReview } from './course-review.entity';
+import { Course } from './course.entity';
+import { ExamReview } from './exam-review.entity';
+import { Exam } from './exam.entity';
+import { FlashcardGroup } from './flashcard-group.entity';
+import { Notification } from './notification.entity';
 import { UserCourse } from './user-course.entity';
 import { UserCourseUnit } from './user-courseunit.entity';
-import { UserLesson } from './user-lesson.entity';
-import { UserExercise } from './user-exercise.entity';
 import { UserExam } from './user-exam.entity';
-import { AnswerAnalyze } from './answer-analyze.entity';
-import { Notification } from './notification.entity';
-import { FlashcardGroup } from './flashcard-group.entity';
-import { Expose } from 'class-transformer';
+import { UserExercise } from './user-exercise.entity';
+import { UserLesson } from './user-lesson.entity';
 
 @Entity()
 export class User {
@@ -104,6 +104,9 @@ export class User {
 
   @OneToMany(() => FlashcardGroup, (flashcardGroup) => flashcardGroup.author)
   flashcardGroups: FlashcardGroup[];
+
+  @OneToMany(() => CourseGroup, (courseGroup) => courseGroup.author)
+  courseGroups: CourseGroup[];
 
   @CreateDateColumn()
   createdAt: Date;

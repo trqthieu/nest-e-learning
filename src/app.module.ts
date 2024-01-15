@@ -15,6 +15,7 @@ import { UsersModule } from './users/users.module';
 import { SeedsModule } from './seeds/seed.module';
 import { MailModule } from './mail/mail.module';
 import { CoursesModule } from './courses/courses.module';
+import { CourseGroupModule } from './course-group/course-group.module';
 
 @Module({
   imports: [
@@ -40,6 +41,7 @@ import { CoursesModule } from './courses/courses.module';
     SeedsModule,
     MailModule,
     CoursesModule,
+    CourseGroupModule,
   ],
   controllers: [AppController],
   providers: [
