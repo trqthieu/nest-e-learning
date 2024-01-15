@@ -14,6 +14,7 @@ import { FilesModule } from './files/files.module';
 import { UsersModule } from './users/users.module';
 import { SeedsModule } from './seeds/seed.module';
 import { MailModule } from './mail/mail.module';
+import { CoursesModule } from './courses/courses.module';
 
 @Module({
   imports: [
@@ -25,7 +26,7 @@ import { MailModule } from './mail/mail.module';
       type: 'postgres',
       host: 'localhost',
       port: 5432,
-      password: 'root',
+      password: '1',
       username: 'postgres',
       entities: [join(__dirname, 'entities', '*.entity{.ts,.js}')],
       database: 'e-learning',
@@ -38,6 +39,7 @@ import { MailModule } from './mail/mail.module';
     CloudinaryModule,
     SeedsModule,
     MailModule,
+    CoursesModule,
   ],
   controllers: [AppController],
   providers: [
