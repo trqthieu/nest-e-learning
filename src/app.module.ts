@@ -16,6 +16,8 @@ import { SeedsModule } from './seeds/seed.module';
 import { MailModule } from './mail/mail.module';
 import { CoursesModule } from './courses/courses.module';
 import { CourseGroupModule } from './course-group/course-group.module';
+import { CourseUnitsModule } from './course-units/course-units.module';
+import { CourseSectionsModule } from './course-sections/course-sections.module';
 
 @Module({
   imports: [
@@ -42,6 +44,8 @@ import { CourseGroupModule } from './course-group/course-group.module';
     MailModule,
     CoursesModule,
     CourseGroupModule,
+    CourseUnitsModule,
+    CourseSectionsModule,
   ],
   controllers: [AppController],
   providers: [

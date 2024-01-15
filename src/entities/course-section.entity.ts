@@ -22,6 +22,9 @@ export class CourseSection {
   @Column('varchar')
   description: string;
 
+  @Column('int')
+  order: number;
+
   @ManyToOne(() => Course, (course) => course.courseSections)
   course: Course;
 
