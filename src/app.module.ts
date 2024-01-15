@@ -20,6 +20,8 @@ import { CourseUnitsModule } from './course-units/course-units.module';
 import { CourseSectionsModule } from './course-sections/course-sections.module';
 import { LessonsModule } from './lessons/lessons.module';
 import { ExercisesModule } from './exercises/exercises.module';
+import { QuestionsModule } from './questions/questions.module';
+import { QuestionSelectsModule } from './question-selects/question-selects.module';
 
 @Module({
   imports: [
@@ -50,6 +52,8 @@ import { ExercisesModule } from './exercises/exercises.module';
     CourseSectionsModule,
     LessonsModule,
     ExercisesModule,
+    QuestionsModule,
+    QuestionSelectsModule,
   ],
   controllers: [AppController],
   providers: [
