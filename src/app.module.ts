@@ -24,6 +24,8 @@ import { QuestionsModule } from './questions/questions.module';
 import { QuestionSelectsModule } from './question-selects/question-selects.module';
 import { CourseReviewsModule } from './course-reviews/course-reviews.module';
 import { ExamReviewsModule } from './exam-reviews/exam-reviews.module';
+import { ArticlesModule } from './articles/articles.module';
+import { CommentsModule } from './comments/comments.module';
 
 @Module({
   imports: [
@@ -58,6 +60,8 @@ import { ExamReviewsModule } from './exam-reviews/exam-reviews.module';
     QuestionSelectsModule,
     CourseReviewsModule,
     ExamReviewsModule,
+    ArticlesModule,
+    CommentsModule,
   ],
   controllers: [AppController],
   providers: [
