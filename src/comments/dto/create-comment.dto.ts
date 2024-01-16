@@ -1,7 +1,7 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { IsInt, IsNotEmpty, IsString } from 'class-validator';
 
-export class CreateCourseReviewDto {
+export class CreateCommentDto {
   @ApiProperty()
   @IsString()
   @IsNotEmpty()
@@ -9,13 +9,9 @@ export class CreateCourseReviewDto {
 
   @ApiProperty()
   @IsInt()
-  rate: number;
-
-  @ApiProperty()
-  @IsInt()
-  courseId: number;
-
-  @ApiProperty()
-  @IsInt()
   authorId: number;
+
+  @ApiProperty()
+  @IsInt()
+  articleId: number;
 }

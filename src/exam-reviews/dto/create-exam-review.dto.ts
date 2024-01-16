@@ -12,12 +12,10 @@ export class CreateExamReviewDto {
   rate: number;
 
   @ApiProperty()
-  @IsString()
-  @IsNotEmpty()
+  @IsInt()
   examId: number;
 
   @ApiProperty()
-  @IsString()
-  @IsNotEmpty()
+  @IsInt()
   authorId: number;
 }
