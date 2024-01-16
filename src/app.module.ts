@@ -26,6 +26,7 @@ import { CourseReviewsModule } from './course-reviews/course-reviews.module';
 import { ExamReviewsModule } from './exam-reviews/exam-reviews.module';
 import { ArticlesModule } from './articles/articles.module';
 import { CommentsModule } from './comments/comments.module';
+import { AnswerAnalyzesModule } from './answer-analyzes/answer-analyzes.module';
 
 @Module({
   imports: [
@@ -62,6 +63,7 @@ import { CommentsModule } from './comments/comments.module';
     ExamReviewsModule,
     ArticlesModule,
     CommentsModule,
+    AnswerAnalyzesModule,
   ],
   controllers: [AppController],
   providers: [
