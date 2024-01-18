@@ -45,7 +45,7 @@ export class UsersController {
   @Get()
   async getUsers(@Query() pageOptionsDto: PageOptionsDto) {
     try {
-      return this.usersService.getUsers(pageOptionsDto);
+      return await this.usersService.getUsers(pageOptionsDto);
     } catch (error) {
       throw error;
     }
@@ -119,7 +119,7 @@ export class UsersController {
     file: Express.Multer.File,
   ) {
     try {
-      return this.usersService.importFile(file);
+      return await this.usersService.importFile(file);
     } catch (error) {
       throw error;
     }

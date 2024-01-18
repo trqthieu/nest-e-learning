@@ -22,7 +22,7 @@ export class NotificationsController {
   @Post()
   async create(@Body() createNotificationDto: CreateNotificationDto) {
     try {
-      return this.notificationsService.create(createNotificationDto);
+      return await this.notificationsService.create(createNotificationDto);
     } catch (error) {
       throw error;
     }
@@ -31,7 +31,7 @@ export class NotificationsController {
   @Get()
   async findAll(@Query() pageOptionsDto: PageOptionsDto) {
     try {
-      return this.notificationsService.findAll(pageOptionsDto);
+      return await this.notificationsService.findAll(pageOptionsDto);
     } catch (error) {
       throw error;
     }
@@ -40,7 +40,7 @@ export class NotificationsController {
   @Get(':id')
   async findOne(@Param('id') id: string) {
     try {
-      return this.notificationsService.findOne(+id);
+      return await this.notificationsService.findOne(+id);
     } catch (error) {
       throw error;
     }
@@ -52,7 +52,7 @@ export class NotificationsController {
     @Body() updateNotificationDto: UpdateNotificationDto,
   ) {
     try {
-      return this.notificationsService.update(+id, updateNotificationDto);
+      return await this.notificationsService.update(+id, updateNotificationDto);
     } catch (error) {
       throw error;
     }
@@ -61,7 +61,7 @@ export class NotificationsController {
   @Delete(':id')
   async remove(@Param('id') id: string) {
     try {
-      return this.notificationsService.remove(+id);
+      return await this.notificationsService.remove(+id);
     } catch (error) {
       throw error;
     }

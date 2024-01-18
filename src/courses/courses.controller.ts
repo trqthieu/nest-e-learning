@@ -48,18 +48,21 @@ export class CoursesController {
   }
 
   @Patch(':id')
-  update(@Param('id') id: string, @Body() updateCourseDto: UpdateCourseDto) {
+  async update(
+    @Param('id') id: string,
+    @Body() updateCourseDto: UpdateCourseDto,
+  ) {
     try {
-      return this.coursesService.update(+id, updateCourseDto);
+      return await this.coursesService.update(+id, updateCourseDto);
     } catch (error) {
       throw error;
     }
   }
 
   @Delete(':id')
-  remove(@Param('id') id: string) {
+  async remove(@Param('id') id: string) {
     try {
-      return this.coursesService.remove(+id);
+      return await this.coursesService.remove(+id);
     } catch (error) {
       throw error;
     }
