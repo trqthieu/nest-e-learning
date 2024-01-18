@@ -31,6 +31,8 @@ import { NotificationsModule } from './notifications/notifications.module';
 import { FlashcardsModule } from './flashcards/flashcards.module';
 import { FlashcardGroupsModule } from './flashcard-groups/flashcard-groups.module';
 import { FlashcardItemsModule } from './flashcard-items/flashcard-items.module';
+import { UserCourseModule } from './user-course/user-course.module';
+import { UserCourseUnitModule } from './user-course-unit/user-course-unit.module';
 
 @Module({
   imports: [
@@ -72,6 +74,8 @@ import { FlashcardItemsModule } from './flashcard-items/flashcard-items.module';
     FlashcardsModule,
     FlashcardGroupsModule,
     FlashcardItemsModule,
+    UserCourseModule,
+    UserCourseUnitModule,
   ],
   controllers: [AppController],
   providers: [
