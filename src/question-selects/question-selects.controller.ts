@@ -24,7 +24,7 @@ export class QuestionSelectsController {
   @Post()
   async create(@Body() createQuestionSelectDto: CreateQuestionSelectDto) {
     try {
-      return this.questionSelectsService.create(createQuestionSelectDto);
+      return await this.questionSelectsService.create(createQuestionSelectDto);
     } catch (error) {
       throw error;
     }
@@ -33,7 +33,7 @@ export class QuestionSelectsController {
   @Get()
   async findAll(@Query() pageOptionsDto: PageOptionsDto) {
     try {
-      return this.questionSelectsService.findAll(pageOptionsDto);
+      return await this.questionSelectsService.findAll(pageOptionsDto);
     } catch (error) {
       throw error;
     }
@@ -42,7 +42,7 @@ export class QuestionSelectsController {
   @Get(':id')
   async findOne(@Param('id') id: string) {
     try {
-      return this.questionSelectsService.findOne(+id);
+      return await this.questionSelectsService.findOne(+id);
     } catch (error) {
       throw error;
     }
@@ -54,7 +54,7 @@ export class QuestionSelectsController {
     @Body() updateQuestionSelectDto: UpdateQuestionSelectDto,
   ) {
     try {
-      return this.questionSelectsService.update(+id, updateQuestionSelectDto);
+      return await this.questionSelectsService.update(+id, updateQuestionSelectDto);
     } catch (error) {
       throw error;
     }
@@ -63,7 +63,7 @@ export class QuestionSelectsController {
   @Delete(':id')
   async remove(@Param('id') id: string) {
     try {
-      return this.questionSelectsService.remove(+id);
+      return await this.questionSelectsService.remove(+id);
     } catch (error) {
       throw error;
     }

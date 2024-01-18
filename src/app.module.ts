@@ -28,6 +28,9 @@ import { ArticlesModule } from './articles/articles.module';
 import { CommentsModule } from './comments/comments.module';
 import { AnswerAnalyzesModule } from './answer-analyzes/answer-analyzes.module';
 import { NotificationsModule } from './notifications/notifications.module';
+import { FlashcardsModule } from './flashcards/flashcards.module';
+import { FlashcardGroupsModule } from './flashcard-groups/flashcard-groups.module';
+import { FlashcardItemsModule } from './flashcard-items/flashcard-items.module';
 
 @Module({
   imports: [
@@ -66,6 +69,9 @@ import { NotificationsModule } from './notifications/notifications.module';
     CommentsModule,
     AnswerAnalyzesModule,
     NotificationsModule,
+    FlashcardsModule,
+    FlashcardGroupsModule,
+    FlashcardItemsModule,
   ],
   controllers: [AppController],
   providers: [
