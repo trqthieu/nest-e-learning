@@ -33,6 +33,9 @@ import { FlashcardGroupsModule } from './flashcard-groups/flashcard-groups.modul
 import { FlashcardItemsModule } from './flashcard-items/flashcard-items.module';
 import { UserCourseModule } from './user-course/user-course.module';
 import { UserCourseUnitModule } from './user-course-unit/user-course-unit.module';
+import { UserLessonModule } from './user-lesson/user-lesson.module';
+import { UserExamModule } from './user-exam/user-exam.module';
+import { UserExerciseModule } from './user-exercise/user-exercise.module';
 
 @Module({
   imports: [
@@ -76,6 +79,9 @@ import { UserCourseUnitModule } from './user-course-unit/user-course-unit.module
     FlashcardItemsModule,
     UserCourseModule,
     UserCourseUnitModule,
+    UserLessonModule,
+    UserExamModule,
+    UserExerciseModule,
   ],
   controllers: [AppController],
   providers: [
