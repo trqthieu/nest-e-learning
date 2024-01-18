@@ -27,6 +27,7 @@ import { ExamReviewsModule } from './exam-reviews/exam-reviews.module';
 import { ArticlesModule } from './articles/articles.module';
 import { CommentsModule } from './comments/comments.module';
 import { AnswerAnalyzesModule } from './answer-analyzes/answer-analyzes.module';
+import { NotificationsModule } from './notifications/notifications.module';
 
 @Module({
   imports: [
@@ -38,7 +39,7 @@ import { AnswerAnalyzesModule } from './answer-analyzes/answer-analyzes.module';
       type: 'postgres',
       host: 'localhost',
       port: 5432,
-      password: 'root',
+      password: '1',
       username: 'postgres',
       entities: [join(__dirname, 'entities', '*.entity{.ts,.js}')],
       database: 'e-learning',
@@ -64,6 +65,7 @@ import { AnswerAnalyzesModule } from './answer-analyzes/answer-analyzes.module';
     ArticlesModule,
     CommentsModule,
     AnswerAnalyzesModule,
+    NotificationsModule,
   ],
   controllers: [AppController],
   providers: [

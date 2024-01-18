@@ -4,19 +4,10 @@ import {
   DeleteDateColumn,
   Entity,
   ManyToOne,
-  OneToMany,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
-import { Course } from './course.entity';
 import { User } from './user.entity';
-import { Exam } from './exam.entity';
-import { Article } from './article.entity';
-import { CourseUnit } from './course-unit.entity';
-import { Question } from './question.entity';
-import { UserExam } from './user-exam.entity';
-import { QuestionSelect } from './question-select.entity';
-import { UserAnswer } from './user-answer.entity';
 
 @Entity()
 export class Notification {
