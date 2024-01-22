@@ -1,5 +1,5 @@
 import { Module } from '@nestjs/common';
-import { ConfigModule } from '@nestjs/config';
+import { ConfigModule, ConfigService } from '@nestjs/config';
 import { APP_GUARD } from '@nestjs/core';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { join } from 'path';
@@ -43,16 +43,20 @@ import { UserExerciseModule } from './user-exercise/user-exercise.module';
       isGlobal: true,
       load: [configuration],
     }),
-    TypeOrmModule.forRoot({
-      type: 'postgres',
-      host: 'localhost',
-      port: 5432,
-      password: '1',
-      username: 'postgres',
-      entities: [join(__dirname, 'entities', '*.entity{.ts,.js}')],
-      database: 'e-learning',
-      synchronize: true,
-      logging: true,
+    TypeOrmModule.forRootAsync({
+      imports: [ConfigModule],
+      useFactory: async (configService: ConfigService) => ({
+        type: 'postgres',
+        host: configService.get<string>('DATABASE_HOST', 'localhost'),
+        port: configService.get<number>('DATABASE_PORT', 5432),
+        password: configService.get<string>('DATABASE_PASSWORD', '1'),
+        username: configService.get<string>('DATABASE_USERNAME', 'postgres'),
+        entities: [join(__dirname, 'entities', '*.entity{.ts,.js}')],
+        database: configService.get<string>('DATABASE_NAME', 'e-learning'),
+        synchronize: configService.get<boolean>('DATABASE_SYNCHRONIZE', true),
+        logging: configService.get<boolean>('DATABASE_LOGGING', true),
+      }),
+      inject: [ConfigService],
     }),
     AuthModule,
     UsersModule,

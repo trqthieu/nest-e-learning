@@ -11,13 +11,21 @@ export class AuthController {
   @Public()
   @HttpCode(HttpStatus.OK)
   @Post('login')
-  login(@Body() loginDto: LoginDto) {
-    return this.authService.login(loginDto);
+  async login(@Body() loginDto: LoginDto) {
+    try {
+      return this.authService.login(loginDto);
+    } catch (error) {
+      throw error;
+    }
   }
 
   @Public()
   @Post('register')
-  register(@Body() registerDto: RegisterDto) {
-    return this.authService.register(registerDto);
+  async register(@Body() registerDto: RegisterDto) {
+    try {
+      return this.authService.register(registerDto);
+    } catch (error) {
+      throw error;
+    }
   }
 }
