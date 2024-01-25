@@ -25,8 +25,9 @@ export class UsersService {
 
   async createUser(user: CreateUserDto) {
     const { email, password } = user;
-    const existedUser = await this.userRepo.findOneBy({
-      email,
+    const existedUser = await this.userRepo.findOne({
+      where: { email },
+      withDeleted: true,
     });
     if (existedUser) {
       throw new BadRequestException(ErrorMessage.EMAIL_HAS_EXISTED);
@@ -61,10 +62,13 @@ export class UsersService {
     if (!existedUser) {
       throw new BadRequestException(ErrorMessage.USER_IS_NOT_EXISTS);
     }
-    const userWithEmail = await this.userRepo.findOneBy({
-      email,
+    const userWithEmail = await this.userRepo.findOne({
+      where: {
+        email,
+      },
+      withDeleted: true,
     });
-    if (userWithEmail && userWithEmail.id !== +id) {
+    if (userWithEmail?.id && userWithEmail.id !== +id) {
       throw new BadRequestException(ErrorMessage.EMAIL_HAS_EXISTED);
     }
     const hash = await hashPassword(password);
