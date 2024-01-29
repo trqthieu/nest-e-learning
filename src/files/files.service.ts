@@ -4,6 +4,7 @@ import * as Excel from 'exceljs';
 import { CloudinaryService } from 'src/cloudinary/cloudinary.service';
 import { File } from 'src/entities/file.entity';
 import { Repository } from 'typeorm';
+import * as admin from 'firebase-admin';
 
 @Injectable()
 export class FilesService {
@@ -20,6 +21,28 @@ export class FilesService {
     fileEntity.format = cloudFileResponse.format;
     fileEntity.type = cloudFileResponse.resource_type;
     return await this.fileRepo.save(fileEntity);
+  }
+
+  async updateDocument(file: Express.Multer.File) {
+    const bucket = admin.storage().bucket();
+    const fileName = file.originalname;
+    const fileUpload = bucket.file(fileName);
+
+    const stream = fileUpload.createWriteStream({
+      metadata: {
+        contentType: file.mimetype,
+      },
+    });
+
+    return new Promise((resolve, reject) => {
+      stream.on('finish', () => {
+        const publicUrl = `https://storage.googleapis.com/${bucket.name}/${fileUpload.name}`;
+        resolve(publicUrl);
+      });
+
+      stream.on('error', reject);
+      stream.end(file.buffer);
+    });
   }
 
   async getDataFromExcel(file: Express.Multer.File): Promise<Array<any[]>> {

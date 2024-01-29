@@ -38,4 +38,25 @@ export class FilesController {
       throw error;
     }
   }
+
+  @Public()
+  @Post('upload-document')
+  @ApiConsumes('multipart/form-data')
+  @UseInterceptors(FileInterceptor('file'))
+  async uploadDocument(
+    @Body() body: FileDto,
+    @UploadedFile()
+    // ImageFileValidationPipe,
+    // new ParseFilePipeBuilder().build({
+    //   fileIsRequired: true,
+    // }),
+    file: Express.Multer.File,
+  ) {
+    try {
+      const fileUploaded = this.filesService.updateDocument(file);
+      return fileUploaded;
+    } catch (error) {
+      throw error;
+    }
+  }
 }
