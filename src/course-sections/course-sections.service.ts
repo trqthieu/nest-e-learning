@@ -1,13 +1,14 @@
 import { Injectable } from '@nestjs/common';
-import { CreateCourseSectionDto } from './dto/create-course-section.dto';
-import { UpdateCourseSectionDto } from './dto/update-course-section.dto';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Course } from 'src/entities/course.entity';
-import { Repository } from 'typeorm';
 import { CourseSection } from 'src/entities/course-section.entity';
-import { PageOptionsDto } from 'src/paginations/pagination-option.dto';
+import { Course } from 'src/entities/course.entity';
 import { PageMetaDto } from 'src/paginations/page-meta.dto';
 import { PageDto } from 'src/paginations/page.dto';
+import { Between, In, Repository, UpdateResult } from 'typeorm';
+import { CreateCourseSectionDto } from './dto/create-course-section.dto';
+import { GetCourseSectionDto } from './dto/get-course-section.dto';
+import { OrderCourseSectionDto } from './dto/order-course-section.dto';
+import { UpdateCourseSectionDto } from './dto/update-course-section.dto';
 
 @Injectable()
 export class CourseSectionsService {
@@ -28,18 +29,104 @@ export class CourseSectionsService {
     return await this.courseSectionRepo.save(courseSection);
   }
 
-  async findAll(pageOptionsDto: PageOptionsDto) {
+  async changeOrder(orderCourseSectionDto: OrderCourseSectionDto) {
+    const { activeId, overId } = orderCourseSectionDto;
+    const queryBuilder =
+      this.courseSectionRepo.createQueryBuilder('course_section');
+    const activeSection = await this.courseSectionRepo.findOne({
+      where: {
+        id: activeId,
+      },
+      relations: {
+        course: true,
+      },
+      select: {
+        course: {
+          id: true,
+        },
+      },
+    });
+    const overSection = await this.courseSectionRepo.findOne({
+      where: {
+        id: overId,
+      },
+      relations: {
+        course: true,
+      },
+      select: {
+        course: {
+          id: true,
+        },
+      },
+    });
+    const activeOrder = activeSection.order;
+    const overOrder = overSection.order;
+
+    const rangeSection = await this.courseSectionRepo.find({
+      where: {
+        course: {
+          id: activeSection.course.id,
+        },
+        order: Between(
+          activeOrder > overOrder ? overOrder : activeOrder,
+          activeOrder > overOrder ? activeOrder : overOrder,
+        ),
+      },
+    });
+    const rangeId = rangeSection.map((section) => section.id);
+    let result: UpdateResult;
+    if (activeOrder > overOrder) {
+      result = await queryBuilder
+        .update(CourseSection)
+        .set({
+          order() {
+            return 'order + 1';
+          },
+        })
+        .where({
+          id: In(rangeId),
+        })
+        .execute();
+      await this.courseSectionRepo.update(activeSection.id, {
+        order: overSection.order,
+      });
+    } else {
+      result = await queryBuilder
+        .update(CourseSection)
+        .set({
+          order() {
+            return 'order - 1';
+          },
+        })
+        .where({
+          id: In(rangeId),
+        })
+        .execute();
+      await this.courseSectionRepo.update(activeSection.id, {
+        order: overSection.order,
+      });
+    }
+    return result;
+  }
+
+  async findAll(getCourseSectionDto: GetCourseSectionDto) {
     const queryBuilder =
       this.courseSectionRepo.createQueryBuilder('course_section');
     queryBuilder
+      .where('course_section.courseId = :courseId', {
+        courseId: getCourseSectionDto.courseId,
+      })
       .leftJoinAndSelect('course_section.course', 'course')
       .leftJoinAndSelect('course_section.courseUnits', 'course_unit')
-      .orderBy('course_section.createdAt', pageOptionsDto.order)
-      .skip(pageOptionsDto.skip)
-      .take(pageOptionsDto.take);
+      .orderBy('course_section.createdAt', getCourseSectionDto.order)
+      .skip(getCourseSectionDto.skip)
+      .take(getCourseSectionDto.take);
     const itemCount = await queryBuilder.getCount();
     const { entities } = await queryBuilder.getRawAndEntities();
-    const pageMetaDto = new PageMetaDto({ itemCount, pageOptionsDto });
+    const pageMetaDto = new PageMetaDto({
+      itemCount,
+      pageOptionsDto: getCourseSectionDto,
+    });
     return new PageDto(entities, pageMetaDto);
   }
 
