@@ -1,19 +1,19 @@
 import {
-  Controller,
-  Get,
-  Post,
   Body,
-  Patch,
-  Param,
+  Controller,
   Delete,
+  Get,
+  Param,
+  Patch,
+  Post,
   Query,
 } from '@nestjs/common';
+import { ApiTags } from '@nestjs/swagger';
 import { CourseUnitsService } from './course-units.service';
 import { CreateCourseUnitDto } from './dto/create-course-unit.dto';
+import { GetCourseUnitDto } from './dto/get-course-unit.dto';
 import { UpdateCourseUnitDto } from './dto/update-course-unit.dto';
-import { Public } from 'src/auth/guards/roles.decorator';
-import { PageOptionsDto } from 'src/paginations/pagination-option.dto';
-import { ApiTags } from '@nestjs/swagger';
+import { OrderCourseUnitDto } from './dto/order-course-unit.dto';
 
 @Controller('course-units')
 @ApiTags('course-units')
@@ -29,10 +29,19 @@ export class CourseUnitsController {
     }
   }
 
-  @Get()
-  async findAll(@Query() pageOptionsDto: PageOptionsDto) {
+  @Post('changeOrder')
+  async changeOrder(@Body() orderCourseUnitDto: OrderCourseUnitDto) {
     try {
-      return await this.courseUnitsService.findAll(pageOptionsDto);
+      return await this.courseUnitsService.changeOrder(orderCourseUnitDto);
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  @Get()
+  async findAll(@Query() getCourseUnitDto: GetCourseUnitDto) {
+    try {
+      return await this.courseUnitsService.findAll(getCourseUnitDto);
     } catch (error) {
       throw error;
     }
