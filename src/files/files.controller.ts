@@ -45,11 +45,11 @@ export class FilesController {
   @UseInterceptors(FileInterceptor('file'))
   async uploadDocument(
     @Body() body: FileDto,
-    @UploadedFile()
-    // ImageFileValidationPipe,
-    // new ParseFilePipeBuilder().build({
-    //   fileIsRequired: true,
-    // }),
+    @UploadedFile(
+      new ParseFilePipeBuilder().build({
+        fileIsRequired: true,
+      }),
+    )
     file: Express.Multer.File,
   ) {
     try {

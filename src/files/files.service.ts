@@ -5,6 +5,7 @@ import { CloudinaryService } from 'src/cloudinary/cloudinary.service';
 import { File } from 'src/entities/file.entity';
 import { Repository } from 'typeorm';
 import * as admin from 'firebase-admin';
+import { v4 as uuidv4 } from 'uuid';
 
 @Injectable()
 export class FilesService {
@@ -25,24 +26,28 @@ export class FilesService {
 
   async updateDocument(file: Express.Multer.File) {
     const bucket = admin.storage().bucket();
-    const fileName = file.originalname;
+    const fileName = `${uuidv4()}-${file.originalname}`;
     const fileUpload = bucket.file(fileName);
-
     const stream = fileUpload.createWriteStream({
       metadata: {
         contentType: file.mimetype,
       },
     });
-
-    return new Promise((resolve, reject) => {
+    const url = (await new Promise((resolve, reject) => {
       stream.on('finish', () => {
-        const publicUrl = `https://storage.googleapis.com/${bucket.name}/${fileUpload.name}`;
+        const publicUrl = `https://firebasestorage.googleapis.com/v0/b/${bucket.name}/o/${fileUpload.name}?alt=media`;
         resolve(publicUrl);
       });
-
       stream.on('error', reject);
       stream.end(file.buffer);
-    });
+    })) as string;
+    const [type, format] = file.mimetype.split('/');
+    const fileEntity = new File();
+    fileEntity.name = file.originalname;
+    fileEntity.url = url;
+    fileEntity.format = format;
+    fileEntity.type = type;
+    return await this.fileRepo.save(fileEntity);
   }
 
   async getDataFromExcel(file: Express.Multer.File): Promise<Array<any[]>> {
