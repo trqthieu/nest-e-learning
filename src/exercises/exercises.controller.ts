@@ -1,18 +1,19 @@
 import {
-  Controller,
-  Get,
-  Post,
   Body,
-  Patch,
-  Param,
+  Controller,
   Delete,
+  Get,
+  Param,
+  Patch,
+  Post,
   Query,
 } from '@nestjs/common';
-import { ExercisesService } from './exercises.service';
-import { CreateExerciseDto } from './dto/create-exercise.dto';
-import { UpdateExerciseDto } from './dto/update-exercise.dto';
-import { PageOptionsDto } from 'src/paginations/pagination-option.dto';
 import { ApiTags } from '@nestjs/swagger';
+import { CreateExerciseDto } from './dto/create-exercise.dto';
+import { GetExerciseDto } from './dto/get-exercise.dto';
+import { OrderExerciseDto } from './dto/order-exercise.dto';
+import { UpdateExerciseDto } from './dto/update-exercise.dto';
+import { ExercisesService } from './exercises.service';
 
 @Controller('exercises')
 @ApiTags('exercises')
@@ -28,10 +29,19 @@ export class ExercisesController {
     }
   }
 
-  @Get()
-  async findAll(@Query() pageOptionsDto: PageOptionsDto) {
+  @Post('changeOrder')
+  async changeOrder(@Body() orderExerciseDto: OrderExerciseDto) {
     try {
-      return await this.exercisesService.findAll(pageOptionsDto);
+      return await this.exercisesService.changeOrder(orderExerciseDto);
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  @Get()
+  async findAll(@Query() getExerciseDto: GetExerciseDto) {
+    try {
+      return await this.exercisesService.findAll(getExerciseDto);
     } catch (error) {
       throw error;
     }

@@ -4,7 +4,7 @@ import { CourseSection } from 'src/entities/course-section.entity';
 import { CourseUnit } from 'src/entities/course-unit.entity';
 import { PageMetaDto } from 'src/paginations/page-meta.dto';
 import { PageDto } from 'src/paginations/page.dto';
-import { Between, In, Repository, UpdateResult } from 'typeorm';
+import { Between, In, MoreThan, Repository, UpdateResult } from 'typeorm';
 import { CreateCourseUnitDto } from './dto/create-course-unit.dto';
 import { GetCourseUnitDto } from './dto/get-course-unit.dto';
 import { UpdateCourseUnitDto } from './dto/update-course-unit.dto';
@@ -158,6 +158,35 @@ export class CourseUnitsService {
   }
 
   async remove(id: number) {
+    const courseUnit = await this.courseUnitRepo.findOne({
+      where: { id },
+      relations: {
+        courseSection: true,
+      },
+    });
+    const greaterOrderCourseUnit = await this.courseUnitRepo.find({
+      where: {
+        courseSection: {
+          id: courseUnit.courseSection.id,
+        },
+        order: MoreThan(courseUnit.order),
+      },
+    });
+    const greaterIds = greaterOrderCourseUnit.map(
+      (courseUnit) => courseUnit.id,
+    );
+    const queryBuilder = this.courseUnitRepo.createQueryBuilder('course_unit');
+    await queryBuilder
+      .update(CourseUnit)
+      .set({
+        order() {
+          return 'order -1';
+        },
+      })
+      .where({
+        id: In(greaterIds),
+      })
+      .execute();
     return await this.courseUnitRepo.softDelete({
       id: +id,
     });

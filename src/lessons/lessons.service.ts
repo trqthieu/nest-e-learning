@@ -4,7 +4,7 @@ import { CourseUnit } from 'src/entities/course-unit.entity';
 import { Lesson } from 'src/entities/lesson.entity';
 import { PageMetaDto } from 'src/paginations/page-meta.dto';
 import { PageDto } from 'src/paginations/page.dto';
-import { Between, In, Repository, UpdateResult } from 'typeorm';
+import { Between, In, MoreThan, Repository, UpdateResult } from 'typeorm';
 import { CreateLessonDto } from './dto/create-lesson.dto';
 import { GetLessonDto } from './dto/get-lesson.dto';
 import { OrderLessonDto } from './dto/order-lesson.dto';
@@ -151,6 +151,33 @@ export class LessonsService {
   }
 
   async remove(id: number) {
+    const lesson = await this.lessonRepo.findOne({
+      where: { id },
+      relations: {
+        courseUnit: true,
+      },
+    });
+    const greaterOrderLesson = await this.lessonRepo.find({
+      where: {
+        courseUnit: {
+          id: lesson.courseUnit.id,
+        },
+        order: MoreThan(lesson.order),
+      },
+    });
+    const greaterIds = greaterOrderLesson.map((lesson) => lesson.id);
+    const queryBuilder = this.lessonRepo.createQueryBuilder('lesson');
+    await queryBuilder
+      .update(Lesson)
+      .set({
+        order() {
+          return 'order -1';
+        },
+      })
+      .where({
+        id: In(greaterIds),
+      })
+      .execute();
     return await this.lessonRepo.softDelete({
       id: +id,
     });
