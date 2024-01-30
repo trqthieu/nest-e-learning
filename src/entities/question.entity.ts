@@ -24,11 +24,11 @@ export class Question {
   @Column('varchar')
   title: string;
 
-  @Column('varchar')
-  name: string;
+  @Column('varchar', { nullable: true })
+  name?: string;
 
-  @Column('varchar')
-  description: string;
+  @Column('varchar', { nullable: true })
+  description?: string;
 
   @Column('int')
   order: number;
@@ -36,14 +36,14 @@ export class Question {
   @Column('text')
   content: string;
 
-  @Column('varchar')
-  video: string;
+  @Column('varchar', { nullable: true })
+  video?: string;
 
-  @Column('varchar')
-  image: string;
+  @Column('varchar', { nullable: true })
+  image?: string;
 
-  @Column('varchar')
-  audio: string;
+  @Column('varchar', { nullable: true })
+  audio?: string;
 
   @Column({
     type: 'enum',
@@ -57,8 +57,8 @@ export class Question {
   })
   questionType: EQuestionType;
 
-  @Column('varchar', { array: true })
-  attachments: string[];
+  @Column('varchar', { array: true, nullable: true })
+  attachments?: string[];
 
   @ManyToOne(() => Exercise, (exercise) => exercise.questions)
   exercise: Exercise;

@@ -1,11 +1,15 @@
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
+import { Type } from 'class-transformer';
 import {
+  IsArray,
   IsEnum,
   IsInt,
   IsNotEmpty,
   IsOptional,
   IsString,
+  ValidateNested,
 } from 'class-validator';
+import { CreateQuestionSelectDto } from 'src/question-selects/dto/create-question-select.dto';
 import { EAnswerType } from 'src/utils/enum/answer-type.enum';
 import { EQuestionType } from 'src/utils/enum/question-type.enum';
 
@@ -15,15 +19,17 @@ export class CreateQuestionDto {
   @IsNotEmpty()
   title: string;
 
-  @ApiProperty()
+  @ApiPropertyOptional()
+  @IsOptional()
   @IsString()
   @IsNotEmpty()
-  name: string;
+  name?: string;
 
-  @ApiProperty()
+  @ApiPropertyOptional()
+  @IsOptional()
   @IsString()
   @IsNotEmpty()
-  description: string;
+  description?: string;
 
   @ApiProperty()
   @IsInt()
@@ -34,20 +40,23 @@ export class CreateQuestionDto {
   @IsNotEmpty()
   content: string;
 
-  @ApiProperty()
+  @ApiPropertyOptional()
+  @IsOptional()
   @IsString()
   @IsNotEmpty()
-  video: string;
+  video?: string;
 
-  @ApiProperty()
+  @ApiPropertyOptional()
+  @IsOptional()
   @IsString()
   @IsNotEmpty()
-  image: string;
+  image?: string;
 
-  @ApiProperty()
+  @ApiPropertyOptional()
+  @IsOptional()
   @IsString()
   @IsNotEmpty()
-  audio: string;
+  audio?: string;
 
   @ApiProperty({
     enum: EAnswerType,
@@ -61,13 +70,14 @@ export class CreateQuestionDto {
   @IsEnum(EQuestionType)
   questionType: EQuestionType;
 
-  @ApiProperty({
+  @ApiPropertyOptional({
     type: String,
     isArray: true,
   })
   @IsString({ each: true })
   @IsNotEmpty({ each: true })
-  attachments: string[];
+  @IsOptional()
+  attachments?: string[];
 
   @ApiPropertyOptional()
   @IsOptional()
@@ -78,4 +88,15 @@ export class CreateQuestionDto {
   @IsOptional()
   @IsInt()
   examId?: number;
+
+  @ApiPropertyOptional({
+    type: CreateQuestionSelectDto,
+    isArray: true,
+  })
+  @IsOptional()
+  @IsNotEmpty({ each: true })
+  @IsArray()
+  @ValidateNested({ each: true })
+  @Type(() => CreateQuestionSelectDto)
+  selections?: CreateQuestionSelectDto[];
 }

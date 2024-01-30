@@ -8,11 +8,12 @@ import {
   Post,
   Query,
 } from '@nestjs/common';
+import { ApiTags } from '@nestjs/swagger';
 import { CreateQuestionDto } from './dto/create-question.dto';
+import { GetQuestionDto } from './dto/get-question.dto';
 import { UpdateQuestionDto } from './dto/update-question.dto';
 import { QuestionsService } from './questions.service';
-import { PageOptionsDto } from 'src/paginations/pagination-option.dto';
-import { ApiTags } from '@nestjs/swagger';
+import { OrderQuestionDto } from './dto/order-question.dto';
 
 @Controller('questions')
 @ApiTags('questions')
@@ -28,10 +29,19 @@ export class QuestionsController {
     }
   }
 
-  @Get()
-  async findAll(@Query() pageOptionsDto: PageOptionsDto) {
+  @Post('changeOrder')
+  async changeOrder(@Body() orderQuestionDto: OrderQuestionDto) {
     try {
-      return await this.questionsService.findAll(pageOptionsDto);
+      return await this.questionsService.changeOrder(orderQuestionDto);
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  @Get()
+  async findAll(@Query() getQuestionDto: GetQuestionDto) {
+    try {
+      return await this.questionsService.findAll(getQuestionDto);
     } catch (error) {
       throw error;
     }

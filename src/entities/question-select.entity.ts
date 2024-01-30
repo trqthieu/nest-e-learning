@@ -22,14 +22,14 @@ export class QuestionSelect {
   @Column('int')
   order: number;
 
-  @Column('varchar')
-  video: string;
+  @Column('varchar', { nullable: true })
+  video?: string;
 
-  @Column('varchar')
-  image: string;
+  @Column('varchar', { nullable: true })
+  image?: string;
 
-  @Column('varchar')
-  audio: string;
+  @Column('varchar', { nullable: true })
+  audio?: string;
 
   @Column('boolean')
   isCorrect: boolean;
