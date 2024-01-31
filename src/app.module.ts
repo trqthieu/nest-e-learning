@@ -36,6 +36,7 @@ import { UserCourseUnitModule } from './user-course-unit/user-course-unit.module
 import { UserLessonModule } from './user-lesson/user-lesson.module';
 import { UserExamModule } from './user-exam/user-exam.module';
 import { UserExerciseModule } from './user-exercise/user-exercise.module';
+import { ExamsModule } from './exams/exams.module';
 
 @Module({
   imports: [
@@ -54,7 +55,7 @@ import { UserExerciseModule } from './user-exercise/user-exercise.module';
         entities: [join(__dirname, 'entities', '*.entity{.ts,.js}')],
         database: configService.get<string>('DATABASE_NAME', 'e-learning'),
         synchronize: configService.get<boolean>('DATABASE_SYNCHRONIZE', true),
-        logging: configService.get<boolean>('DATABASE_LOGGING', true),
+        // logging: configService.get<boolean>('DATABASE_LOGGING', true),
       }),
       inject: [ConfigService],
     }),
@@ -86,6 +87,7 @@ import { UserExerciseModule } from './user-exercise/user-exercise.module';
     UserLessonModule,
     UserExamModule,
     UserExerciseModule,
+    ExamsModule,
   ],
   controllers: [AppController],
   providers: [

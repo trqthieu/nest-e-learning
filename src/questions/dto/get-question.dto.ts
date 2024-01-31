@@ -1,11 +1,18 @@
-import { ApiProperty } from '@nestjs/swagger';
+import { ApiPropertyOptional } from '@nestjs/swagger';
 import { Transform } from 'class-transformer';
-import { IsInt } from 'class-validator';
+import { IsInt, IsOptional } from 'class-validator';
 import { PageOptionsDto } from 'src/paginations/pagination-option.dto';
 
 export class GetQuestionDto extends PageOptionsDto {
-  @ApiProperty()
+  @ApiPropertyOptional()
+  @IsOptional()
   @IsInt()
   @Transform(({ value }) => Number.parseInt(value))
-  exerciseId: number;
+  exerciseId?: number;
+
+  @ApiPropertyOptional()
+  @IsOptional()
+  @IsInt()
+  @Transform(({ value }) => Number.parseInt(value))
+  examId?: number;
 }

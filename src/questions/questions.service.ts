@@ -1,21 +1,25 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
+import { Exam } from 'src/entities/exam.entity';
 import { Exercise } from 'src/entities/exercise.entity';
 import { QuestionSelect } from 'src/entities/question-select.entity';
 import { Question } from 'src/entities/question.entity';
 import { PageMetaDto } from 'src/paginations/page-meta.dto';
 import { PageDto } from 'src/paginations/page.dto';
+import { EQuestionType } from 'src/utils/enum/question-type.enum';
 import { Between, In, MoreThan, Repository, UpdateResult } from 'typeorm';
 import { CreateQuestionDto } from './dto/create-question.dto';
 import { GetQuestionDto } from './dto/get-question.dto';
-import { UpdateQuestionDto } from './dto/update-question.dto';
 import { OrderQuestionDto } from './dto/order-question.dto';
+import { UpdateQuestionDto } from './dto/update-question.dto';
 
 @Injectable()
 export class QuestionsService {
   constructor(
     @InjectRepository(Exercise)
     private exerciseRepo: Repository<Exercise>,
+    @InjectRepository(Exam)
+    private examRepo: Repository<Exam>,
     @InjectRepository(Question)
     private questionRepo: Repository<Question>,
     @InjectRepository(QuestionSelect)
@@ -25,10 +29,23 @@ export class QuestionsService {
     const exercise = await this.exerciseRepo.findOneBy({
       id: createQuestionDto.exerciseId,
     });
-    const question = await this.questionRepo.create({
-      ...createQuestionDto,
-      exercise: exercise,
+    const exam = await this.examRepo.findOneBy({
+      id: createQuestionDto.examId,
     });
+    const questionPayload = createQuestionDto.exerciseId
+      ? {
+          ...createQuestionDto,
+          exercise: exercise,
+          exam: exam,
+        }
+      : {
+          ...createQuestionDto,
+          exercise: exercise,
+          exam: exam,
+        };
+    console.log('exercise', exercise);
+    console.log('exam', exam);
+    const question = await this.questionRepo.create(questionPayload);
     const createdQuestion = await this.questionRepo.save(question);
     if (createQuestionDto?.selections?.length) {
       const selections = createQuestionDto.selections.map((selection) => ({
@@ -43,7 +60,7 @@ export class QuestionsService {
   }
 
   async changeOrder(orderQuestionDto: OrderQuestionDto) {
-    const { activeId, overId } = orderQuestionDto;
+    const { activeId, overId, type } = orderQuestionDto;
     const queryBuilder = this.questionRepo.createQueryBuilder('question');
     const activeQuestion = await this.questionRepo.findOne({
       where: {
@@ -51,9 +68,13 @@ export class QuestionsService {
       },
       relations: {
         exercise: true,
+        exam: true,
       },
       select: {
         exercise: {
+          id: true,
+        },
+        exam: {
           id: true,
         },
       },
@@ -64,26 +85,41 @@ export class QuestionsService {
       },
       relations: {
         exercise: true,
+        exam: true,
       },
       select: {
         exercise: {
+          id: true,
+        },
+        exam: {
           id: true,
         },
       },
     });
     const activeOrder = activeQuestion.order;
     const overOrder = overQuestion.order;
-
+    const rangeCondition =
+      type === EQuestionType.EXERCISE
+        ? {
+            exercise: {
+              id: activeQuestion.exercise.id,
+            },
+            order: Between(
+              activeOrder > overOrder ? overOrder : activeOrder,
+              activeOrder > overOrder ? activeOrder : overOrder,
+            ),
+          }
+        : {
+            exam: {
+              id: activeQuestion.exam.id,
+            },
+            order: Between(
+              activeOrder > overOrder ? overOrder : activeOrder,
+              activeOrder > overOrder ? activeOrder : overOrder,
+            ),
+          };
     const rangeQuestion = await this.questionRepo.find({
-      where: {
-        exercise: {
-          id: activeQuestion.exercise.id,
-        },
-        order: Between(
-          activeOrder > overOrder ? overOrder : activeOrder,
-          activeOrder > overOrder ? activeOrder : overOrder,
-        ),
-      },
+      where: rangeCondition,
     });
     const rangeId = rangeQuestion.map((question) => question.id);
     let result: UpdateResult;
@@ -123,13 +159,25 @@ export class QuestionsService {
 
   async findAll(getQuestionDto: GetQuestionDto) {
     const queryBuilder = this.questionRepo.createQueryBuilder('question');
+    const { exerciseId, examId } = getQuestionDto;
+    const expression = exerciseId
+      ? {
+          exerciseId: getQuestionDto.exerciseId,
+        }
+      : examId
+      ? {
+          examId: getQuestionDto.examId,
+        }
+      : {};
+    const where = exerciseId
+      ? 'question.exercise = :exerciseId'
+      : 'question.exam = :examId';
     queryBuilder
-      .where('question.exercise = :exerciseId', {
-        exerciseId: getQuestionDto.exerciseId,
-      })
+      .where(where, expression)
       .leftJoinAndSelect('question.exercise', 'exercise')
       .leftJoinAndSelect('question.questionSelects', 'question_select')
       .orderBy('question.createdAt', getQuestionDto.order)
+      .orderBy('question_select.order', 'ASC')
       .skip(getQuestionDto.skip)
       .take(getQuestionDto.take);
     const itemCount = await queryBuilder.getCount();
@@ -154,18 +202,61 @@ export class QuestionsService {
   }
 
   async update(id: number, updateQuestionDto: UpdateQuestionDto) {
-    const exercise = await this.exerciseRepo.findOneBy({
-      id: updateQuestionDto.exerciseId,
+    const questionSelectQueryBuilder =
+      this.questionSelectRepo.createQueryBuilder('question_select');
+    const exercise = await this.exerciseRepo.findOne({
+      where: { id: updateQuestionDto.exerciseId },
     });
-    const question = await this.questionRepo.create({
-      id: id,
-      ...updateQuestionDto,
-      exercise: exercise,
+    const exam = await this.examRepo.findOne({
+      where: { id: updateQuestionDto.examId },
     });
+    const type = updateQuestionDto.questionType;
+    const questionPayload =
+      type === EQuestionType.EXERCISE
+        ? {
+            id: id,
+            ...updateQuestionDto,
+            exercise: exercise,
+          }
+        : {
+            id: id,
+            ...updateQuestionDto,
+            exam: exam,
+          };
+    const question = await this.questionRepo.create(questionPayload);
     const savedQuestion = await this.questionRepo.save(question);
-    const selections = updateQuestionDto.selections;
-    console.log('selections', selections);
 
+    const updatedQuestion = await this.questionRepo.findOne({
+      where: { id },
+      relations: {
+        questionSelects: true,
+      },
+    });
+    const initSelectionIds = updatedQuestion.questionSelects.map(
+      (selection) => selection.id,
+    );
+    const selections = updateQuestionDto.selections;
+    const restSelectionIds = selections
+      .filter((selection) => selection.id)
+      .map((item) => item.id);
+    const removeIds = initSelectionIds.filter(
+      (initId) => !restSelectionIds.includes(initId),
+    );
+    await questionSelectQueryBuilder
+      .update(QuestionSelect)
+      .set({
+        deletedAt: new Date(),
+      })
+      .where({
+        id: In(removeIds),
+      })
+      .execute();
+    const selectionsMap = selections.map((selection) => ({
+      ...selection,
+      question: savedQuestion,
+    }));
+    const answers = await this.questionSelectRepo.create(selectionsMap);
+    await this.questionSelectRepo.save(answers);
     return savedQuestion;
   }
 
@@ -174,17 +265,28 @@ export class QuestionsService {
       where: { id },
       relations: {
         exercise: true,
+        exam: true,
       },
     });
-    const greaterOrderExercise = await this.questionRepo.find({
-      where: {
-        exercise: {
-          id: question.exercise.id,
-        },
-        order: MoreThan(question.order),
-      },
+    const type = question.questionType;
+    const greaterCondition =
+      type === EQuestionType.EXERCISE
+        ? {
+            exercise: {
+              id: question.exercise.id,
+            },
+            order: MoreThan(question.order),
+          }
+        : {
+            exam: {
+              id: question.exam.id,
+            },
+            order: MoreThan(question.order),
+          };
+    const greaterOrderQuestion = await this.questionRepo.find({
+      where: greaterCondition,
     });
-    const greaterIds = greaterOrderExercise.map((question) => question.id);
+    const greaterIds = greaterOrderQuestion.map((question) => question.id);
     const queryBuilder = this.questionRepo.createQueryBuilder('question');
     await queryBuilder
       .update(Question)

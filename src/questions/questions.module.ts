@@ -5,9 +5,12 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { Question } from 'src/entities/question.entity';
 import { Exercise } from 'src/entities/exercise.entity';
 import { QuestionSelect } from 'src/entities/question-select.entity';
+import { Exam } from 'src/entities/exam.entity';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([Question, QuestionSelect, Exercise])],
+  imports: [
+    TypeOrmModule.forFeature([Question, QuestionSelect, Exercise, Exam]),
+  ],
   controllers: [QuestionsController],
   providers: [QuestionsService],
 })

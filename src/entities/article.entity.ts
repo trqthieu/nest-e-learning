@@ -25,8 +25,8 @@ export class Article {
   @Column('varchar')
   banner: string;
 
-  @Column('varchar')
-  video: string;
+  @Column('varchar', { nullable: true })
+  video?: string;
 
   @Column('text')
   content: string;
