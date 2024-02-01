@@ -19,6 +19,17 @@ export class AuthController {
     }
   }
 
+  // @Public()
+  // @HttpCode(HttpStatus.OK)
+  // @Post('getMe')
+  // async getMe() {
+  //   try {
+  //     return this.authService.getMe();
+  //   } catch (error) {
+  //     throw error;
+  //   }
+  // }
+
   @Public()
   @Post('register')
   async register(@Body() registerDto: RegisterDto) {

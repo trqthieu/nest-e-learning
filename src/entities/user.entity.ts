@@ -48,7 +48,7 @@ export class User {
   EXP: number;
 
   @Column('varchar', { nullable: true })
-  avatar: string;
+  avatar?: string;
 
   @Column({
     type: 'enum',
