@@ -1,9 +1,20 @@
-import { Body, Controller, HttpCode, HttpStatus, Post } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Get,
+  HttpCode,
+  HttpStatus,
+  Post,
+} from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { LoginDto } from './dtos/login.dto';
 import { RegisterDto } from './dtos/register.dto';
 import { Public } from './guards/roles.decorator';
+import { UserRequest } from './guards/user.decorator';
+import { UserToken } from './constants/auth.constant';
+import { ApiBearerAuth } from '@nestjs/swagger';
 
+@ApiBearerAuth()
 @Controller('auth')
 export class AuthController {
   constructor(private authService: AuthService) {}
@@ -19,16 +30,15 @@ export class AuthController {
     }
   }
 
-  // @Public()
-  // @HttpCode(HttpStatus.OK)
-  // @Post('getMe')
-  // async getMe() {
-  //   try {
-  //     return this.authService.getMe();
-  //   } catch (error) {
-  //     throw error;
-  //   }
-  // }
+  @HttpCode(HttpStatus.OK)
+  @Get('getMe')
+  async getMe(@UserRequest() user: UserToken) {
+    try {
+      return this.authService.getMe(user);
+    } catch (error) {
+      throw error;
+    }
+  }
 
   @Public()
   @Post('register')

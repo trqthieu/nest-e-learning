@@ -92,14 +92,14 @@ import { ExamsModule } from './exams/exams.module';
   controllers: [AppController],
   providers: [
     AppService,
-    // {
-    //   provide: APP_GUARD,
-    //   useClass: AuthGuard,
-    // },
-    // {
-    //   provide: APP_GUARD,
-    //   useClass: RolesGuard,
-    // },
+    {
+      provide: APP_GUARD,
+      useClass: AuthGuard,
+    },
+    {
+      provide: APP_GUARD,
+      useClass: RolesGuard,
+    },
   ],
 })
 export class AppModule {}

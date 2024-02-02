@@ -12,6 +12,7 @@ import { checkPassword, hashPassword } from './utils/auth.util';
 import { RegisterDto } from './dtos/register.dto';
 import { ErrorMessage } from 'src/utils/constants/error-message.constant';
 import { MailService } from 'src/mail/mail.service';
+import { UserToken } from './constants/auth.constant';
 
 @Injectable()
 export class AuthService {
@@ -35,10 +36,19 @@ export class AuthService {
     if (!user.isVerify) {
       throw new BadRequestException(ErrorMessage.USER_HAS_NOT_VERIFIED);
     }
-    const payload = { id: user.id, role: user.role };
+    const payload: UserToken = { id: user.id };
     return {
       access_token: await this.jwtService.signAsync(payload),
     };
+  }
+
+  async getMe(user: UserToken) {
+    const currentUser = await this.userRepo.findOne({
+      where: {
+        id: user.id,
+      },
+    });
+    return currentUser;
   }
 
   async register(registerDto: RegisterDto) {

@@ -4,3 +4,7 @@ export const jwtConstants = {
   // secret: configuration().jwtSecret,
   secret: 'jwtSecret',
 };
+
+export interface UserToken {
+  id: number;
+}
