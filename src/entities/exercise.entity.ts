@@ -29,14 +29,14 @@ export class Exercise {
   @Column('text')
   content: string;
 
-  @Column('varchar')
-  video: string;
+  @Column('varchar', { nullable: true })
+  video?: string;
 
-  @Column('varchar')
-  banner: string;
+  @Column('varchar', { nullable: true })
+  banner?: string;
 
-  @Column('varchar', { array: true })
-  attachments: string[];
+  @Column('varchar', { array: true, nullable: true })
+  attachments?: string[];
 
   @ManyToOne(() => CourseUnit, (courseUnit) => courseUnit.exercises)
   courseUnit: CourseUnit;

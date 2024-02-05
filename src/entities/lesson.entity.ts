@@ -28,13 +28,13 @@ export class Lesson {
   @Column('text')
   content: string;
 
-  @Column('varchar')
+  @Column('varchar', { nullable: true })
   video: string;
 
-  @Column('varchar')
+  @Column('varchar', { nullable: true })
   banner: string;
 
-  @Column('varchar', { array: true })
+  @Column('varchar', { array: true, nullable: true })
   attachments: string[];
 
   @ManyToOne(() => CourseUnit, (courseUnit) => courseUnit.lessons)

@@ -175,6 +175,7 @@ export class QuestionsService {
     queryBuilder
       .where(where, expression)
       .leftJoinAndSelect('question.exercise', 'exercise')
+      .leftJoinAndSelect('question.exam', 'exam')
       .leftJoinAndSelect('question.questionSelects', 'question_select')
       .orderBy('question.createdAt', getQuestionDto.order)
       .orderBy('question_select.order', 'ASC')

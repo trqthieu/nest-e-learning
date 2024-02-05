@@ -35,10 +35,11 @@ export class CreateQuestionDto {
   @IsInt()
   order: number;
 
-  @ApiProperty()
+  @ApiPropertyOptional()
   @IsString()
   @IsNotEmpty()
-  content: string;
+  @IsOptional()
+  content?: string;
 
   @ApiPropertyOptional()
   @IsOptional()

@@ -1,5 +1,5 @@
-import { ApiProperty } from '@nestjs/swagger';
-import { IsInt, IsNotEmpty, IsString } from 'class-validator';
+import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
+import { IsInt, IsNotEmpty, IsOptional, IsString } from 'class-validator';
 
 export class CreateExerciseDto {
   @ApiProperty()
@@ -21,23 +21,26 @@ export class CreateExerciseDto {
   @IsNotEmpty()
   content: string;
 
-  @ApiProperty()
+  @ApiPropertyOptional()
   @IsString()
   @IsNotEmpty()
-  video: string;
+  @IsOptional()
+  video?: string;
 
-  @ApiProperty()
+  @ApiPropertyOptional()
   @IsString()
   @IsNotEmpty()
-  banner: string;
+  @IsOptional()
+  banner?: string;
 
-  @ApiProperty({
+  @ApiPropertyOptional({
     type: String,
     isArray: true,
   })
   @IsString({ each: true })
   @IsNotEmpty({ each: true })
-  attachments: string[];
+  @IsOptional()
+  attachments?: string[];
 
   @ApiProperty()
   @IsInt()

@@ -33,8 +33,8 @@ export class Question {
   @Column('int')
   order: number;
 
-  @Column('text')
-  content: string;
+  @Column('text', { nullable: true })
+  content?: string;
 
   @Column('varchar', { nullable: true })
   video?: string;
