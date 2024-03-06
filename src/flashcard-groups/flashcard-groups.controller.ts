@@ -11,9 +11,10 @@ import {
 import { FlashcardGroupsService } from './flashcard-groups.service';
 import { CreateFlashcardGroupDto } from './dto/create-flashcard-group.dto';
 import { UpdateFlashcardGroupDto } from './dto/update-flashcard-group.dto';
-import { ApiTags } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import { PageOptionsDto } from 'src/paginations/pagination-option.dto';
 
+@ApiBearerAuth()
 @Controller('flashcard-groups')
 @ApiTags('flashcard-groups')
 export class FlashcardGroupsController {
@@ -54,7 +55,10 @@ export class FlashcardGroupsController {
     @Body() updateFlashcardGroupDto: UpdateFlashcardGroupDto,
   ) {
     try {
-      return await this.flashcardGroupsService.update(+id, updateFlashcardGroupDto);
+      return await this.flashcardGroupsService.update(
+        +id,
+        updateFlashcardGroupDto,
+      );
     } catch (error) {
       throw error;
     }

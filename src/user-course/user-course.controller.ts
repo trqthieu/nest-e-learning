@@ -1,19 +1,20 @@
 import {
-  Controller,
-  Get,
-  Post,
   Body,
-  Patch,
-  Param,
+  Controller,
   Delete,
+  Get,
+  Param,
+  Patch,
+  Post,
   Query,
 } from '@nestjs/common';
-import { UserCourseService } from './user-course.service';
+import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import { CreateUserCourseDto } from './dto/create-user-course.dto';
+import { GetUserCourseDto } from './dto/get-user-course.dto';
 import { UpdateUserCourseDto } from './dto/update-user-course.dto';
-import { ApiTags } from '@nestjs/swagger';
-import { PageOptionsDto } from 'src/paginations/pagination-option.dto';
+import { UserCourseService } from './user-course.service';
 
+@ApiBearerAuth()
 @Controller('user-course')
 @ApiTags('user-course')
 export class UserCourseController {
@@ -29,9 +30,9 @@ export class UserCourseController {
   }
 
   @Get()
-  async findAll(@Query() pageOptionsDto: PageOptionsDto) {
+  async findAll(@Query() getUserCourseDto: GetUserCourseDto) {
     try {
-      return await this.userCourseService.findAll(pageOptionsDto);
+      return await this.userCourseService.findAll(getUserCourseDto);
     } catch (error) {
       throw error;
     }

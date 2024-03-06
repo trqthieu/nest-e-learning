@@ -8,12 +8,13 @@ import {
   Post,
   Query,
 } from '@nestjs/common';
-import { ApiTags } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import { PageOptionsDto } from 'src/paginations/pagination-option.dto';
 import { CourseGroupService } from './course-group.service';
 import { CreateCourseGroupDto } from './dto/create-course-group.dto';
 import { UpdateCourseGroupDto } from './dto/update-course-group.dto';
 
+@ApiBearerAuth()
 @Controller('course-group')
 @ApiTags('course-group')
 export class CourseGroupController {

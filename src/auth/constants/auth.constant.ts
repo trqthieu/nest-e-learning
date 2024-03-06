@@ -5,6 +5,8 @@ export const jwtConstants = {
   secret: 'jwtSecret',
 };
 
+export const BASE_URL = 'https://nest-e-learning.onrender.com';
+
 export interface UserToken {
   id: number;
 }

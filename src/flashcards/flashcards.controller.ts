@@ -12,8 +12,9 @@ import { FlashcardsService } from './flashcards.service';
 import { CreateFlashcardDto } from './dto/create-flashcard.dto';
 import { UpdateFlashcardDto } from './dto/update-flashcard.dto';
 import { PageOptionsDto } from 'src/paginations/pagination-option.dto';
-import { ApiTags } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 
+@ApiBearerAuth()
 @Controller('flashcards')
 @ApiTags('flashcards')
 export class FlashcardsController {

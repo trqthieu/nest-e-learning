@@ -8,12 +8,13 @@ import {
   Post,
   Query,
 } from '@nestjs/common';
-import { ApiTags } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import { CreateUserCourseUnitDto } from './dto/create-user-course-unit.dto';
-import { PageOptionsDto } from 'src/paginations/pagination-option.dto';
+import { GetUserCourseUnitDto } from './dto/get-user-course-unit.dto';
 import { UpdateUserCourseUnitDto } from './dto/update-user-course-unit.dto';
 import { UserCourseUnitService } from './user-course-unit.service';
 
+@ApiBearerAuth()
 @Controller('user-course-unit')
 @ApiTags('user-course-unit')
 export class UserCourseUnitController {
@@ -29,9 +30,9 @@ export class UserCourseUnitController {
   }
 
   @Get()
-  async findAll(@Query() pageOptionsDto: PageOptionsDto) {
+  async findAll(@Query() getUserCourseUnitDto: GetUserCourseUnitDto) {
     try {
-      return await this.userCourseUnitService.findAll(pageOptionsDto);
+      return await this.userCourseUnitService.findAll(getUserCourseUnitDto);
     } catch (error) {
       throw error;
     }

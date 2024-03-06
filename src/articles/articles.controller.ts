@@ -12,8 +12,9 @@ import { ArticlesService } from './articles.service';
 import { CreateArticleDto } from './dto/create-article.dto';
 import { UpdateArticleDto } from './dto/update-article.dto';
 import { PageOptionsDto } from 'src/paginations/pagination-option.dto';
-import { ApiTags } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 
+@ApiBearerAuth()
 @Controller('articles')
 @ApiTags('articles')
 export class ArticlesController {

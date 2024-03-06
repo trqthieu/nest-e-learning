@@ -11,9 +11,10 @@ import {
 import { QuestionSelectsService } from './question-selects.service';
 import { CreateQuestionSelectDto } from './dto/create-question-select.dto';
 import { UpdateQuestionSelectDto } from './dto/update-question-select.dto';
-import { ApiTags } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import { PageOptionsDto } from 'src/paginations/pagination-option.dto';
 
+@ApiBearerAuth()
 @Controller('question-selects')
 @ApiTags('question-selects')
 export class QuestionSelectsController {
@@ -54,7 +55,10 @@ export class QuestionSelectsController {
     @Body() updateQuestionSelectDto: UpdateQuestionSelectDto,
   ) {
     try {
-      return await this.questionSelectsService.update(+id, updateQuestionSelectDto);
+      return await this.questionSelectsService.update(
+        +id,
+        updateQuestionSelectDto,
+      );
     } catch (error) {
       throw error;
     }

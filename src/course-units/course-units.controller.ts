@@ -8,13 +8,14 @@ import {
   Post,
   Query,
 } from '@nestjs/common';
-import { ApiTags } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import { CourseUnitsService } from './course-units.service';
 import { CreateCourseUnitDto } from './dto/create-course-unit.dto';
 import { GetCourseUnitDto } from './dto/get-course-unit.dto';
 import { UpdateCourseUnitDto } from './dto/update-course-unit.dto';
 import { OrderCourseUnitDto } from './dto/order-course-unit.dto';
 
+@ApiBearerAuth()
 @Controller('course-units')
 @ApiTags('course-units')
 export class CourseUnitsController {

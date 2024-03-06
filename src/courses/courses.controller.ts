@@ -12,9 +12,10 @@ import { CoursesService } from './courses.service';
 import { CreateCourseDto } from './dto/create-course.dto';
 import { UpdateCourseDto } from './dto/update-course.dto';
 import { Public } from 'src/auth/guards/roles.decorator';
-import { ApiTags } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import { PageOptionsDto } from 'src/paginations/pagination-option.dto';
 
+@ApiBearerAuth()
 @Controller('courses')
 @ApiTags('courses')
 export class CoursesController {

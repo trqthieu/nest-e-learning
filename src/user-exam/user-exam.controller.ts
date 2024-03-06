@@ -11,9 +11,10 @@ import {
 import { UserExamService } from './user-exam.service';
 import { CreateUserExamDto } from './dto/create-user-exam.dto';
 import { UpdateUserExamDto } from './dto/update-user-exam.dto';
-import { ApiTags } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import { PageOptionsDto } from 'src/paginations/pagination-option.dto';
 
+@ApiBearerAuth()
 @Controller('user-exam')
 @ApiTags('user-exam')
 export class UserExamController {

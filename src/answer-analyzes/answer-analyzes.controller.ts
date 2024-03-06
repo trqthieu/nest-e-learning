@@ -12,8 +12,9 @@ import { AnswerAnalyzesService } from './answer-analyzes.service';
 import { CreateAnswerAnalyzeDto } from './dto/create-answer-analyze.dto';
 import { UpdateAnswerAnalyzeDto } from './dto/update-answer-analyze.dto';
 import { PageOptionsDto } from 'src/paginations/pagination-option.dto';
-import { ApiTags } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 
+@ApiBearerAuth()
 @Controller('answer-analyzes')
 @ApiTags('answer-analyzes')
 export class AnswerAnalyzesController {

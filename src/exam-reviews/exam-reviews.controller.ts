@@ -12,8 +12,9 @@ import { ExamReviewsService } from './exam-reviews.service';
 import { CreateExamReviewDto } from './dto/create-exam-review.dto';
 import { UpdateExamReviewDto } from './dto/update-exam-review.dto';
 import { PageOptionsDto } from 'src/paginations/pagination-option.dto';
-import { ApiTags } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 
+@ApiBearerAuth()
 @Controller('exam-reviews')
 @ApiTags('exam-reviews')
 export class ExamReviewsController {

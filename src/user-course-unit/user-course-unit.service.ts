@@ -5,9 +5,9 @@ import { UserCourseUnit } from 'src/entities/user-courseunit.entity';
 import { User } from 'src/entities/user.entity';
 import { PageMetaDto } from 'src/paginations/page-meta.dto';
 import { PageDto } from 'src/paginations/page.dto';
-import { PageOptionsDto } from 'src/paginations/pagination-option.dto';
 import { Repository } from 'typeorm';
 import { CreateUserCourseUnitDto } from './dto/create-user-course-unit.dto';
+import { GetUserCourseUnitDto } from './dto/get-user-course-unit.dto';
 import { UpdateUserCourseUnitDto } from './dto/update-user-course-unit.dto';
 
 @Injectable()
@@ -27,6 +27,15 @@ export class UserCourseUnitService {
     const user = await this.userRepo.findOneBy({
       id: createUserCourseUnitDto.userId,
     });
+    const existedUserCourseUnit = await this.userCourseUnitRepo.findOne({
+      where: {
+        courseUnit: courseUnit,
+        user: user,
+      },
+    });
+    if (existedUserCourseUnit) {
+      return existedUserCourseUnit;
+    }
     const userCourseUnit = await this.userCourseUnitRepo.create({
       ...createUserCourseUnitDto,
       courseUnit: courseUnit,
@@ -35,18 +44,37 @@ export class UserCourseUnitService {
     return await this.userCourseUnitRepo.save(userCourseUnit);
   }
 
-  async findAll(pageOptionsDto: PageOptionsDto) {
+  async findAll(getUserCourseUnitDto: GetUserCourseUnitDto) {
     const queryBuilder =
       this.userCourseUnitRepo.createQueryBuilder('user_course_unit');
+    const { courseUnitId, userId } = getUserCourseUnitDto;
+    const expression = courseUnitId
+      ? {
+          courseUnitId: courseUnitId,
+        }
+      : userId
+      ? {
+          userId: userId,
+        }
+      : {};
+    const where = courseUnitId
+      ? 'course_unit.id = :courseUnitId'
+      : userId
+      ? 'user.id = :userId'
+      : {};
     queryBuilder
-      .leftJoinAndSelect('user_course_unit.course_unit', 'course_unit')
+      .where(where, expression)
+      .leftJoinAndSelect('user_course_unit.courseUnit', 'courseUnit')
       .leftJoinAndSelect('user_course_unit.user', 'user')
-      .orderBy('user_course_unit.createdAt', pageOptionsDto.order)
-      .skip(pageOptionsDto.skip)
-      .take(pageOptionsDto.take);
+      .orderBy('user_course_unit.createdAt', getUserCourseUnitDto.order)
+      .skip(getUserCourseUnitDto.skip)
+      .take(getUserCourseUnitDto.take);
     const itemCount = await queryBuilder.getCount();
     const { entities } = await queryBuilder.getRawAndEntities();
-    const pageMetaDto = new PageMetaDto({ itemCount, pageOptionsDto });
+    const pageMetaDto = new PageMetaDto({
+      itemCount,
+      pageOptionsDto: getUserCourseUnitDto,
+    });
     return new PageDto(entities, pageMetaDto);
   }
 

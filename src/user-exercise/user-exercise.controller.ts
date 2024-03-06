@@ -11,9 +11,10 @@ import {
 import { UserExerciseService } from './user-exercise.service';
 import { CreateUserExerciseDto } from './dto/create-user-exercise.dto';
 import { UpdateUserExerciseDto } from './dto/update-user-exercise.dto';
-import { ApiTags } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import { PageOptionsDto } from 'src/paginations/pagination-option.dto';
 
+@ApiBearerAuth()
 @Controller('user-exercise')
 @ApiTags('user-exercise')
 export class UserExerciseController {

@@ -11,9 +11,10 @@ import {
 import { UserLessonService } from './user-lesson.service';
 import { CreateUserLessonDto } from './dto/create-user-lesson.dto';
 import { UpdateUserLessonDto } from './dto/update-user-lesson.dto';
-import { ApiTags } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import { PageOptionsDto } from 'src/paginations/pagination-option.dto';
 
+@ApiBearerAuth()
 @Controller('user-lesson')
 @ApiTags('user-lesson')
 export class UserLessonController {

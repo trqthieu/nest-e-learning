@@ -12,8 +12,9 @@ import { CourseReviewsService } from './course-reviews.service';
 import { CreateCourseReviewDto } from './dto/create-course-review.dto';
 import { UpdateCourseReviewDto } from './dto/update-course-review.dto';
 import { PageOptionsDto } from 'src/paginations/pagination-option.dto';
-import { ApiTags } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 
+@ApiBearerAuth()
 @Controller('course-reviews')
 @ApiTags('course-reviews')
 export class CourseReviewsController {

@@ -7,12 +7,13 @@ import {
   UseInterceptors,
 } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
-import { ApiConsumes, ApiTags } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiConsumes, ApiTags } from '@nestjs/swagger';
 import { Public } from 'src/auth/guards/roles.decorator';
 import { FileDto } from './dtos/file.dto';
 import { ImageFileValidationPipe } from './dtos/file.validation';
 import { FilesService } from './files.service';
 
+@ApiBearerAuth()
 @Controller('files')
 @ApiTags('files')
 export class FilesController {

@@ -8,13 +8,14 @@ import {
   Post,
   Query,
 } from '@nestjs/common';
-import { ApiTags } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import { CreateLessonDto } from './dto/create-lesson.dto';
 import { GetLessonDto } from './dto/get-lesson.dto';
 import { OrderLessonDto } from './dto/order-lesson.dto';
 import { UpdateLessonDto } from './dto/update-lesson.dto';
 import { LessonsService } from './lessons.service';
 
+@ApiBearerAuth()
 @Controller('lessons')
 @ApiTags('lessons')
 export class LessonsController {
