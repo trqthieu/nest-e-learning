@@ -29,8 +29,12 @@ export class UserCourseService {
     });
     const existedUserCourse = await this.userCourseRepo.findOne({
       where: {
-        course: course,
-        user: user,
+        course: {
+          id: createUserCourseDto.courseId,
+        },
+        user: {
+          id: createUserCourseDto.userId,
+        },
       },
     });
     if (existedUserCourse) {
