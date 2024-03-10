@@ -35,6 +35,11 @@ export class AuthService {
     const payload: UserToken = { id: user.id };
     return {
       access_token: await this.jwtService.signAsync(payload),
+      user: await this.userRepo.findOne({
+        where: {
+          id: user.id,
+        },
+      }),
     };
   }
 

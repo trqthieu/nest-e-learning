@@ -27,6 +27,19 @@ export class UserLessonService {
     const user = await this.userRepo.findOneBy({
       id: createUserLessonDto.userId,
     });
+    const existedUserLesson = await this.userLessonRepo.findOne({
+      where: {
+        lesson: {
+          id: createUserLessonDto.lessonId,
+        },
+        user: {
+          id: createUserLessonDto.userId,
+        },
+      },
+    });
+    if (existedUserLesson) {
+      return existedUserLesson;
+    }
     const userLesson = await this.userLessonRepo.create({
       ...createUserLessonDto,
       lesson: lesson,
