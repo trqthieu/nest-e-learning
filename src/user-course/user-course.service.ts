@@ -69,6 +69,7 @@ export class UserCourseService {
       .where(where, expression)
       .leftJoinAndSelect('user_course.course', 'course')
       .leftJoinAndSelect('user_course.user', 'user')
+      .leftJoinAndSelect('course.teacher', 'teacher')
       .orderBy('user_course.createdAt', getUserCourseDto.order)
       .skip(getUserCourseDto.skip)
       .take(getUserCourseDto.take);
