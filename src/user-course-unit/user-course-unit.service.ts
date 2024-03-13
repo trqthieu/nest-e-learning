@@ -9,12 +9,18 @@ import { Repository } from 'typeorm';
 import { CreateUserCourseUnitDto } from './dto/create-user-course-unit.dto';
 import { GetUserCourseUnitDto } from './dto/get-user-course-unit.dto';
 import { UpdateUserCourseUnitDto } from './dto/update-user-course-unit.dto';
+import { Course } from 'src/entities/course.entity';
+import { UserCourse } from 'src/entities/user-course.entity';
 
 @Injectable()
 export class UserCourseUnitService {
   constructor(
     @InjectRepository(CourseUnit)
     private courseUnitRepo: Repository<CourseUnit>,
+    @InjectRepository(UserCourse)
+    private userCourseRepo: Repository<UserCourse>,
+    @InjectRepository(Course)
+    private courseRepo: Repository<Course>,
     @InjectRepository(User)
     private userRepo: Repository<User>,
     @InjectRepository(UserCourseUnit)
@@ -66,9 +72,11 @@ export class UserCourseUnitService {
       : userId
       ? 'user.id = :userId'
       : {};
+    console.log('where, expression', where, expression);
+
     queryBuilder
       .where(where, expression)
-      .leftJoinAndSelect('user_course_unit.courseUnit', 'courseUnit')
+      .leftJoinAndSelect('user_course_unit.courseUnit', 'course_unit')
       .leftJoinAndSelect('user_course_unit.user', 'user')
       .orderBy('user_course_unit.createdAt', getUserCourseUnitDto.order)
       .skip(getUserCourseUnitDto.skip)
@@ -95,19 +103,81 @@ export class UserCourseUnitService {
   }
 
   async update(id: number, updateUserCourseUnitDto: UpdateUserCourseUnitDto) {
-    const courseUnit = await this.courseUnitRepo.findOneBy({
-      id: updateUserCourseUnitDto.courseUnitId,
+    const courseUnit = await this.courseUnitRepo.findOne({
+      where: {
+        id: updateUserCourseUnitDto.courseUnitId,
+      },
+      relations: {
+        courseSection: {
+          course: true,
+        },
+      },
+      select: {
+        courseSection: {
+          id: true,
+          course: {
+            id: true,
+          },
+        },
+      },
     });
     const user = await this.userRepo.findOneBy({
       id: updateUserCourseUnitDto.userId,
     });
-    const userCourse = await this.userCourseUnitRepo.create({
+    const userCourseUnit = await this.userCourseUnitRepo.create({
       id,
       ...updateUserCourseUnitDto,
       courseUnit: courseUnit,
       user: user,
     });
-    return await this.userCourseUnitRepo.save(userCourse);
+    const result = await this.userCourseUnitRepo.save(userCourseUnit);
+    const courseId = courseUnit.courseSection.course.id;
+    const course = await this.courseRepo.findOne({
+      where: { id: courseId },
+      relations: {
+        courseSections: {
+          courseUnits: true,
+        },
+      },
+    });
+    let totalUnit = 0;
+    course.courseSections.forEach((section) => {
+      totalUnit += section.courseUnits.length;
+    });
+    console.log(user, course);
+
+    const totalUnitCompleted = await this.userCourseUnitRepo.count({
+      where: {
+        is_completed: true,
+        user: {
+          id: user.id,
+        },
+        courseUnit: {
+          courseSection: {
+            course: {
+              id: courseId,
+            },
+          },
+        },
+      },
+    });
+    const process = Math.floor((totalUnitCompleted * 100) / totalUnit);
+    const userCourse = await this.userCourseRepo.findOne({
+      where: {
+        user: {
+          id: user.id,
+        },
+        course: {
+          id: course.id,
+        },
+      },
+    });
+    const userCourseUpdate = await this.userCourseRepo.create({
+      id: userCourse.id,
+      process: process,
+    });
+    await this.userCourseRepo.save(userCourseUpdate);
+    return result;
   }
 
   async remove(id: number) {

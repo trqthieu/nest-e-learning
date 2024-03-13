@@ -1,4 +1,5 @@
 import {
+  Column,
   CreateDateColumn,
   DeleteDateColumn,
   Entity,
@@ -13,6 +14,9 @@ import { User } from './user.entity';
 export class UserCourseUnit {
   @PrimaryGeneratedColumn()
   id: number;
+
+  @Column({ type: 'boolean', default: false })
+  is_completed: boolean;
 
   @ManyToOne(() => User, (user) => user.userCourseUnits)
   user: User;
