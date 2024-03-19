@@ -5,12 +5,13 @@ import { UserCourseUnit } from 'src/entities/user-courseunit.entity';
 import { User } from 'src/entities/user.entity';
 import { PageMetaDto } from 'src/paginations/page-meta.dto';
 import { PageDto } from 'src/paginations/page.dto';
-import { Repository } from 'typeorm';
+import { In, Repository } from 'typeorm';
 import { CreateUserCourseUnitDto } from './dto/create-user-course-unit.dto';
 import { GetUserCourseUnitDto } from './dto/get-user-course-unit.dto';
 import { UpdateUserCourseUnitDto } from './dto/update-user-course-unit.dto';
 import { Course } from 'src/entities/course.entity';
 import { UserCourse } from 'src/entities/user-course.entity';
+import { GetStatusUnitDto } from './dto/get-status-unit.dto';
 
 @Injectable()
 export class UserCourseUnitService {
@@ -90,6 +91,19 @@ export class UserCourseUnitService {
     return new PageDto(entities, pageMetaDto);
   }
 
+  async getStatusUnit(getStatusUnit: GetStatusUnitDto) {
+    const userUnit = await this.userCourseUnitRepo
+      .createQueryBuilder('user_course_unit')
+      .innerJoin('user_course_unit.user', 'user')
+      .innerJoin('user_course_unit.courseUnit', 'courseUnit')
+      .where('user.id = :userId', { userId: getStatusUnit.userId })
+      .andWhere('courseUnit.id IN (:...unitIds)', {
+        unitIds: getStatusUnit.unitIds,
+      })
+      .getMany();
+    return userUnit;
+  }
+
   async findOne(id: number) {
     return await this.userCourseUnitRepo.findOne({
       where: {
@@ -162,6 +176,9 @@ export class UserCourseUnitService {
       },
     });
     const process = Math.floor((totalUnitCompleted * 100) / totalUnit);
+    console.log('process', process);
+    console.log(course.id);
+
     const userCourse = await this.userCourseRepo.findOne({
       where: {
         user: {

@@ -13,12 +13,22 @@ import { CreateUserCourseUnitDto } from './dto/create-user-course-unit.dto';
 import { GetUserCourseUnitDto } from './dto/get-user-course-unit.dto';
 import { UpdateUserCourseUnitDto } from './dto/update-user-course-unit.dto';
 import { UserCourseUnitService } from './user-course-unit.service';
+import { GetStatusUnitDto } from './dto/get-status-unit.dto';
 
 @ApiBearerAuth()
 @Controller('user-course-unit')
 @ApiTags('user-course-unit')
 export class UserCourseUnitController {
   constructor(private readonly userCourseUnitService: UserCourseUnitService) {}
+
+  @Post('status')
+  async getStatusUnit(@Body() getStatusUnit: GetStatusUnitDto) {
+    try {
+      return await this.userCourseUnitService.getStatusUnit(getStatusUnit);
+    } catch (error) {
+      throw error;
+    }
+  }
 
   @Post()
   async create(@Body() createUserCourseUnitDto: CreateUserCourseUnitDto) {

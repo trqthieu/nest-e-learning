@@ -14,6 +14,7 @@ import { UpdateCourseDto } from './dto/update-course.dto';
 import { Public } from 'src/auth/guards/roles.decorator';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import { PageOptionsDto } from 'src/paginations/pagination-option.dto';
+import { GetCourseDto } from './dto/get-course.dto';
 
 @ApiBearerAuth()
 @Controller('courses')
@@ -31,9 +32,9 @@ export class CoursesController {
   }
 
   @Get()
-  async findAll(@Query() pageOptionsDto: PageOptionsDto) {
+  async findAll(@Query() getCourseDto: GetCourseDto) {
     try {
-      return await this.coursesService.findAll(pageOptionsDto);
+      return await this.coursesService.findAll(getCourseDto);
     } catch (error) {
       throw error;
     }

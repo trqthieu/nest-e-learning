@@ -3,12 +3,13 @@ import { CreateUserExerciseDto } from './dto/create-user-exercise.dto';
 import { UpdateUserExerciseDto } from './dto/update-user-exercise.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { User } from 'src/entities/user.entity';
-import { Repository } from 'typeorm';
+import { In, Repository } from 'typeorm';
 import { Exercise } from 'src/entities/exercise.entity';
 import { UserExercise } from 'src/entities/user-exercise.entity';
 import { PageOptionsDto } from 'src/paginations/pagination-option.dto';
 import { PageMetaDto } from 'src/paginations/page-meta.dto';
 import { PageDto } from 'src/paginations/page.dto';
+import { GetScoreEx } from './dto/get-scrore.dto';
 
 @Injectable()
 export class UserExerciseService {
@@ -27,6 +28,19 @@ export class UserExerciseService {
     const user = await this.userRepo.findOneBy({
       id: createUserExerciseDto.userId,
     });
+    const existedUserEx = await this.userExerciseRepo.findOne({
+      where: {
+        exercise: {
+          id: createUserExerciseDto.exerciseId,
+        },
+        user: {
+          id: createUserExerciseDto.userId,
+        },
+      },
+    });
+    if (existedUserEx) {
+      return existedUserEx;
+    }
     const userExercise = await this.userExerciseRepo.create({
       ...createUserExerciseDto,
       exercise: exercise,
@@ -48,6 +62,19 @@ export class UserExerciseService {
     const { entities } = await queryBuilder.getRawAndEntities();
     const pageMetaDto = new PageMetaDto({ itemCount, pageOptionsDto });
     return new PageDto(entities, pageMetaDto);
+  }
+
+  async getScoreEx(getScoreEx: GetScoreEx) {
+    const userEx = await this.userExerciseRepo
+      .createQueryBuilder('user_exercise')
+      .innerJoin('user_exercise.user', 'user')
+      .innerJoin('user_exercise.exercise', 'exercise')
+      .where('user.id = :userId', { userId: getScoreEx.userId })
+      .andWhere('exercise.id IN (:...exerciseIds)', {
+        exerciseIds: getScoreEx.exerciseIds,
+      })
+      .getMany();
+    return userEx;
   }
 
   async findOne(id: number) {

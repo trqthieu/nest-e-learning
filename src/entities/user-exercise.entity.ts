@@ -1,4 +1,5 @@
 import {
+  Column,
   CreateDateColumn,
   DeleteDateColumn,
   Entity,
@@ -19,6 +20,9 @@ export class UserExercise {
 
   @ManyToOne(() => Exercise, (exercise) => exercise.userExercises)
   exercise: Exercise;
+
+  @Column({ type: 'int' })
+  score: number;
 
   @CreateDateColumn()
   createdAt: Date;

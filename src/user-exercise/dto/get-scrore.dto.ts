@@ -1,16 +1,12 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { IsInt } from 'class-validator';
 
-export class CreateUserExerciseDto {
+export class GetScoreEx {
   @ApiProperty()
   @IsInt()
   userId: number;
 
   @ApiProperty()
-  @IsInt()
-  exerciseId: number;
-
-  @ApiProperty()
-  @IsInt()
-  score: number;
+  @IsInt({ each: true })
+  exerciseIds: number[];
 }
