@@ -51,25 +51,29 @@ export class UserCourseService {
   async findAll(getUserCourseDto: GetUserCourseDto) {
     const queryBuilder = this.userCourseRepo.createQueryBuilder('user_course');
     const { courseId, userId } = getUserCourseDto;
-    const expression = courseId
-      ? {
-          courseId: courseId,
-        }
-      : userId
-      ? {
-          userId: userId,
-        }
-      : {};
-    const where = courseId
-      ? 'course.id = :courseId'
-      : userId
-      ? 'user.id = :userId'
-      : {};
+    let expression: any = {};
+    let where: any = {};
+
+    if (courseId && userId) {
+      expression.courseId = courseId;
+      expression.userId = userId;
+      where =
+        '(user_course.courseId = :courseId AND user_course.userId = :userId)';
+    } else if (courseId) {
+      expression.courseId = courseId;
+      where = '(user_course.courseId = :courseId)';
+    } else if (userId) {
+      expression.userId = userId;
+      where = '(user_course.userId = :userId)';
+    }
+
+    console.log(where, expression);
+
     queryBuilder
-      .where(where, expression)
       .leftJoinAndSelect('user_course.course', 'course')
       .leftJoinAndSelect('user_course.user', 'user')
       .leftJoinAndSelect('course.teacher', 'teacher')
+      .where(where, expression)
       .orderBy('user_course.createdAt', getUserCourseDto.order)
       .skip(getUserCourseDto.skip)
       .take(getUserCourseDto.take);

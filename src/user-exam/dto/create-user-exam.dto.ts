@@ -8,5 +8,9 @@ export class CreateUserExamDto {
 
   @ApiProperty()
   @IsInt()
+  score: number;
+
+  @ApiProperty()
+  @IsInt()
   examId: number;
 }

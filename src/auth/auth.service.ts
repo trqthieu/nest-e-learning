@@ -29,9 +29,9 @@ export class AuthService {
         ErrorMessage.EMAIL_OR_PASSWORD_IS_NOT_CORRECT,
       );
     }
-    if (!user.isVerify) {
-      throw new BadRequestException(ErrorMessage.USER_HAS_NOT_VERIFIED);
-    }
+    // if (!user.isVerify) {
+    //   throw new BadRequestException(ErrorMessage.USER_HAS_NOT_VERIFIED);
+    // }
     const payload: UserToken = { id: user.id };
     return {
       access_token: await this.jwtService.signAsync(payload),
@@ -54,8 +54,9 @@ export class AuthService {
 
   async register(registerDto: RegisterDto) {
     const { email, password } = registerDto;
-    const user = await this.userRepo.findOneBy({
-      email,
+    const user = await this.userRepo.findOne({
+      where: { email },
+      withDeleted: true,
     });
     if (user) {
       throw new BadRequestException(ErrorMessage.EMAIL_HAS_EXISTED);

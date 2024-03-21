@@ -25,6 +25,9 @@ export class Exam {
   @Column('varchar')
   description: string;
 
+  @Column('int', { default: 0 })
+  time: string;
+
   @Column('text')
   content: string;
 

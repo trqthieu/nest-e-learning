@@ -24,6 +24,11 @@ export class CreateExamDto {
   @IsNotEmpty()
   content: string;
 
+  @ApiProperty()
+  @IsInt()
+  @IsNotEmpty()
+  time: string;
+
   @ApiProperty({
     enum: ESubjectCategory,
   })
