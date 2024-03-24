@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { BadRequestException, HttpStatus, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Exam } from 'src/entities/exam.entity';
 import { Exercise } from 'src/entities/exercise.entity';
@@ -12,6 +12,13 @@ import { CreateQuestionDto } from './dto/create-question.dto';
 import { GetQuestionDto } from './dto/get-question.dto';
 import { OrderQuestionDto } from './dto/order-question.dto';
 import { UpdateQuestionDto } from './dto/update-question.dto';
+import { FilesService } from 'src/files/files.service';
+import { ErrorMessage } from 'src/utils/constants/error-message.constant';
+import { plainToClass } from 'class-transformer';
+import { validate } from 'class-validator';
+import { CreateUserDto } from 'src/users/dtos/create-user.dto';
+import { EAnswerType } from 'src/utils/enum/answer-type.enum';
+import { shuffleOrderWithinItems } from 'src/utils';
 
 @Injectable()
 export class QuestionsService {
@@ -24,7 +31,98 @@ export class QuestionsService {
     private questionRepo: Repository<Question>,
     @InjectRepository(QuestionSelect)
     private questionSelectRepo: Repository<QuestionSelect>,
+    private filesService: FilesService,
   ) {}
+
+  async importFile(examId: number, file: Express.Multer.File) {
+    const oldQuestion = await this.findAll({
+      examId: examId,
+      skip: 0,
+    });
+    const totalOldQuestion = oldQuestion.meta.totalItem;
+    const data = await this.filesService.getDataFromExcel(file);
+    console.log('data', data);
+    const listKey = ['question', 'answerA', 'answerB', 'answerC', 'answerD'];
+    for (const [index, item] of data.entries()) {
+      if (item.length !== listKey.length) {
+        throw new BadRequestException(ErrorMessage.MISSING_DATA);
+      }
+      const userObject = {
+        question: item[0],
+        answerA: item[1],
+        answerB: item[2],
+        answerC: item[3],
+        answerD: item[4],
+      };
+      const selectionsData = [
+        {
+          key: item[1],
+          isCorrect: true,
+          order: 0,
+          questionId: 0,
+          video: null,
+          image: null,
+          audio: null,
+        },
+        {
+          key: item[2],
+          isCorrect: false,
+          order: 1,
+          questionId: 0,
+          video: null,
+          image: null,
+          audio: null,
+        },
+        {
+          key: item[3],
+          isCorrect: false,
+          order: 2,
+          questionId: 0,
+          video: null,
+          image: null,
+          audio: null,
+        },
+        {
+          key: item[4],
+          isCorrect: false,
+          order: 3,
+          questionId: 0,
+          video: null,
+          image: null,
+          audio: null,
+        },
+      ];
+      const shuffleData = shuffleOrderWithinItems(selectionsData);
+      const dataQuestion: CreateQuestionDto = {
+        answerType: EAnswerType.SELECTION,
+        audio: null,
+        examId: examId,
+        exerciseId: 0,
+        order: index + totalOldQuestion,
+        questionType: EQuestionType.EXAM,
+        selections: shuffleData,
+        title: item[0],
+      };
+
+      await this.create(dataQuestion);
+      //   emailList.push(userObject.email);
+      //   const existedUser = await this.userRepo.findOne({
+      //     where: {
+      //       email: userObject.email,
+      //     },
+      //   });
+      //   if (existedUser) {
+      //     throw new BadRequestException(ErrorMessage.EMAIL_HAS_EXISTED);
+      //   }
+      //   const hash = await hashPassword(userObject.password);
+      //   const user = { ...userObject, password: hash };
+      //   userList.push(user);
+      // }
+      // return await this.userRepo.save([...userList]);
+    }
+    return 'ok';
+  }
+
   async create(createQuestionDto: CreateQuestionDto) {
     const exercise = await this.exerciseRepo.findOneBy({
       id: createQuestionDto.exerciseId,

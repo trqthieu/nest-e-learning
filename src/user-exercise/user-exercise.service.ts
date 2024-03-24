@@ -39,7 +39,11 @@ export class UserExerciseService {
       },
     });
     if (existedUserEx) {
-      return existedUserEx;
+      const updatedUserEx = await this.userExerciseRepo.save({
+        ...existedUserEx,
+        score: createUserExerciseDto.score,
+      });
+      return updatedUserEx;
     }
     const userExercise = await this.userExerciseRepo.create({
       ...createUserExerciseDto,

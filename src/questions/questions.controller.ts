@@ -4,16 +4,23 @@ import {
   Delete,
   Get,
   Param,
+  ParseFilePipeBuilder,
   Patch,
   Post,
   Query,
+  UploadedFile,
+  UseInterceptors,
 } from '@nestjs/common';
-import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
+import { FileInterceptor } from '@nestjs/platform-express';
+import { ApiBearerAuth, ApiConsumes, ApiTags } from '@nestjs/swagger';
+import { FileDto } from 'src/files/dtos/file.dto';
+import { ImportFileValidationPipe } from 'src/files/dtos/file.validation';
 import { CreateQuestionDto } from './dto/create-question.dto';
 import { GetQuestionDto } from './dto/get-question.dto';
+import { OrderQuestionDto } from './dto/order-question.dto';
 import { UpdateQuestionDto } from './dto/update-question.dto';
 import { QuestionsService } from './questions.service';
-import { OrderQuestionDto } from './dto/order-question.dto';
+import { Public } from 'src/auth/guards/roles.decorator';
 
 @ApiBearerAuth()
 @Controller('questions')
@@ -73,6 +80,28 @@ export class QuestionsController {
   async remove(@Param('id') id: string) {
     try {
       return await this.questionsService.remove(+id);
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  @Public()
+  @Post('import/:examId')
+  @ApiConsumes('multipart/form-data')
+  @UseInterceptors(FileInterceptor('file'))
+  async importFile(
+    @Body() body: FileDto,
+    @Param('examId') examId: string,
+    @UploadedFile(
+      ImportFileValidationPipe,
+      new ParseFilePipeBuilder().build({
+        fileIsRequired: true,
+      }),
+    )
+    file: Express.Multer.File,
+  ) {
+    try {
+      return await this.questionsService.importFile(+examId, file);
     } catch (error) {
       throw error;
     }
