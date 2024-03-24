@@ -15,6 +15,7 @@ export class FilesService {
     private cloudinaryService: CloudinaryService,
   ) {}
   async updateImage(file: Express.Multer.File) {
+    file.originalname = file.originalname.split(' ').join('_');
     const cloudFileResponse = await this.cloudinaryService.uploadImage(file);
     const fileEntity = new File();
     fileEntity.name = file.originalname;
@@ -25,6 +26,7 @@ export class FilesService {
   }
 
   async updateDocument(file: Express.Multer.File) {
+    file.originalname = file.originalname.split(' ').join('_');
     const bucket = admin.storage().bucket();
     const fileName = `${uuidv4()}-${file.originalname}`;
     const fileUpload = bucket.file(fileName);
